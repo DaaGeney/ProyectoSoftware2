@@ -65,12 +65,12 @@ export default {
 			var params = {
     data1: 'string',
 }
-			axios.post("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
+			axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
                 params:{
-                    id: 12,
-                    nombre: "this.user.firstName",
-                    apellido: "this.user.firstName",
-                    clave:"this.user.firstName"
+                    id: this.user.username,
+                    nombre: this.user.firstName,
+                    apellido: this.user.lastName,
+                    clave:this.user.password
 
                 }
             })
