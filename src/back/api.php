@@ -63,6 +63,19 @@ if ($action == 'createfav') {
 	}
 }
 
+if ($action == 'getfav') {
+	$user_id =$_GET['user_id'];
+
+
+	$result = $conn->query("SELECT * from `favoritos` where `user_id`='$user_id') ");
+	if ($result) {
+		$res['message'] = "correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al traer favoritos" ;
+	}
+}
+
 if ($action == 'createdivisa') {
 	$symbol =$_GET['symbol'];
 	$price = $_GET['price'];

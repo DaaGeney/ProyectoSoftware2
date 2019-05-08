@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hi {{account.user.firstName}}!</h1>
+    <h1>Bienvenido {{account.user.firstName}}!</h1>
     <h3>Users from secure api end point:</h3>
     <em v-if="users.loading">Loading users...</em>
     <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
@@ -13,19 +13,38 @@
         <span v-else-if="user.deleteError" class="text-danger">- ERROR: {{user.deleteError}}</span>
         <span v-else>
           -
-          <a @click="deleteUser(user.id)" class="text-danger">Delete</a>
+          <a @click="deleteUser(user.id)" class="text-danger">Eliminar mi usuario</a>
         </span>
       </li>
     </ul>
     <table class="list">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Clave</th>
+        <th>SYMBOl</th>
+        <th>PRICE</th>
+        <th>ASK</th>
+        <th>BID</th>
         <th>OPCION</th>
       </tr>
       <tr v-for="usr in usuarios">
+        <td>{{usr.symbol}}</td>
+        <td>{{usr.price}}</td>
+        <td>{{usr.ask}}</td>
+        <td>{{usr.bid}}</td>
+
+        <td>
+          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
+        </td>
+      </tr>
+    </table>
+    <table class="list">
+      <tr>
+        <th>SYMBOl</th>
+        <th>PRICE</th>
+        <th>ASK</th>
+        <th>BID</th>
+        <th>OPCION</th>
+      </tr>
+      <tr v-for="usr in favoritos">
         <td>{{usr.symbol}}</td>
         <td>{{usr.price}}</td>
         <td>{{usr.ask}}</td>
