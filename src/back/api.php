@@ -25,15 +25,15 @@ if ($action == 'readusers') {
 	$res['users'] = $users;
 	
 }
-if($action=='search'){
-	$id = $_GET['id'];
-$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='activo'");
-	$users = array();
-	while ($row = $result->fetch_assoc()){
-		array_push($users, $row);
-	}
-	$res['users'] = $users;
-}
+//if($action=='search'){
+//	$id = $_GET['id'];
+//$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='activo'");
+//	$users = array();
+//	while ($row = $result->fetch_assoc()){
+//		array_push($users, $row);
+//	}
+//	$res['users'] = $users;
+//}
 
 // Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
@@ -49,6 +49,20 @@ if ($action == 'createuser') {
 		$res['message'] = "Error al registrar" ;
 	}
 }
+
+if ($action == 'createfav') {
+	$user_id =$_GET['user_id'];
+	$symbol = $_GET['symbol'];
+
+	$result = $conn->query("INSERT INTO `favoritos` (`symbol_id`, `user_id`) VALUES ('$symbol','$user_id') ");
+	if ($result) {
+		$res['message'] = "Usuario creado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al registrar" ;
+	}
+}
+
 if ($action == 'createdivisa') {
 	$symbol =$_GET['symbol'];
 	$price = $_GET['price'];

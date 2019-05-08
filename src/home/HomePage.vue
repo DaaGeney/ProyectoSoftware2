@@ -25,14 +25,14 @@
         <th>Clave</th>
         <th>OPCION</th>
       </tr>
-      <tr v-for="user in usuarios">
-        <td>{{user.symbol}}</td>
-        <td>{{user.price}}</td>
-        <td>{{user.ask}}</td>
-        <td>{{user.bid}}</td>
+      <tr v-for="usr in usuarios">
+        <td>{{usr.symbol}}</td>
+        <td>{{usr.price}}</td>
+        <td>{{usr.ask}}</td>
+        <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" selectUser(user)">favorito</button>
+          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
         </td>
       </tr>
     </table>
@@ -138,9 +138,29 @@ export default {
          
       request.send();
     console.log(auxiliar.length)
-   
-      
+    },
+    favorite(usera, first){
+        console.log(first)
+        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createfav", {
+                params:{
+                    user_id:first,
+                    symbol: usera
+
+                }
+            })
+				.then(function (response) {
+					console.log(response);
+					//console.log(app.newUser)
+					if (response.data.error) {
+                        console.log("Error metiendo fav")
+                       
+					} else {
+						console.log("fav dentro melo")
+						
+					}
+				});
     }
+
   }
 };
 </script>
