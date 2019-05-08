@@ -1,42 +1,231 @@
 <template>
-    <div>
-        <h1>Hi {{account.user.firstName}}!</h1>
-        <p>You're logged in with Vue + Vuex & JWT!!</p>
-        <h3>Users from secure api end point:</h3>
-        <em v-if="users.loading">Loading users...</em>
-        <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
-        <ul v-if="users.items">
-            <li v-for="user in users.items" :key="user.id">
-                {{user.firstName + ' ' + user.lastName}}
-                <span v-if="user.deleting"><em> - Deleting...</em></span>
-                <span v-else-if="user.deleteError" class="text-danger"> - ERROR: {{user.deleteError}}</span>
-                <span v-else> - <a @click="deleteUser(user.id)" class="text-danger">Delete</a></span>
-            </li>
-        </ul>
-        <p>
-            <router-link to="/login">Logout</router-link>
-        </p>
-    </div>
+  <div>
+    <h1>Hi {{account.user.firstName}}!</h1>
+    <h3>Users from secure api end point:</h3>
+    <em v-if="users.loading">Loading users...</em>
+    <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
+    <ul v-if="users.items">
+      <li v-for="user in users.items" :key="user.id">
+        {{user.firstName + ' ' + user.lastName}}
+        <span v-if="user.deleting">
+          <em>- Deleting...</em>
+        </span>
+        <span v-else-if="user.deleteError" class="text-danger">- ERROR: {{user.deleteError}}</span>
+        <span v-else>
+          -
+          <a @click="deleteUser(user.id)" class="text-danger">Delete</a>
+        </span>
+      </li>
+    </ul>
+    <table class="list">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Clave</th>
+        <th>OPCION</th>
+      </tr>
+      <tr v-for="user in usuarios">
+        <td>{{user.symbol}}</td>
+        <td>{{user.price}}</td>
+        <td>{{user.ask}}</td>
+        <td>{{user.bid}}</td>
+
+        <td>
+          <button @click=" selectUser(user)">favorito</button>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <router-link to="/login">Logout</router-link>
+    </p>
+  </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
+//import func from '../../vue-temp/vue-editor-bridge';
 
 export default {
-    computed: {
-        ...mapState({
-            account: state => state.account,
-            users: state => state.users.all
-        })
-    },
-    created () {
-        this.getAllUsers();
-    },
-    methods: {
-        ...mapActions('users', {
-            getAllUsers: 'getAll',
-            deleteUser: 'delete'
-        })
+  data() {
+    return {
+      usuarios: [],
+      clickedUser: {},
+      id: ""
+    };
+  },
+  mounted() {
+    this.getAllu();
+  },
+  computed: {
+    ...mapState({
+      account: state => state.account,
+      users: state => state.users.all
+    })
+  },
+  created() {
+    this.getAllUsers();
+  },
+  methods: {
+    ...mapActions("users", {
+      getAllUsers: "getAll",
+      deleteUser: "delete"
+    }),
+    getAllu: function() {
+      var that = this;
+      var requestListado = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
+    var  auxiliar = [];
+          
+      // Open a new connection, using the GET request on the URL endpoint
+      var string, string2;
+
+      requestListado.open(
+        "GET",
+        "https://forex.1forge.com/1.0.3/symbols?api_key=CN2qvr0mUhY8UHPwK505ij5Q82Ig2zSB",
+        true
+      );
+      requestListado.onload = function() {
+        string = requestListado.responseText;
+        string = string
+          .replace(/['"]+/g, "")
+          .replace("[", "")
+          .replace("]", "");
+      };
+      requestListado.send();
+      request.open(
+        "GET",
+        "https://forex.1forge.com/1.0.3/quotes?pairs=" +
+          string +
+          "&api_key=CN2qvr0mUhY8UHPwK505ij5Q82Ig2zSB",
+        true
+      );
+    
+      request.onload=function(){
+           
+          var json = JSON.parse(request.responseText);
+          // console.log("apunto")
+          for(var i = 0; i<10;i++){
+            auxiliar[i]= { "symbol": json[i].symbol, "price": json[i].price,"bid":json[i].bid, "ask": json[i].ask}
+             //console.log("auxili")
+            //console.log(auxiliar)
+            }
+            console.log(auxiliar)
+            that.usuarios = auxiliar;
+            for(var i = 0; i<10;i++){
+            axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createdivisa", {
+                params:{
+                    symbol: that.usuarios[i].symbol,
+                    ask: that.usuarios[i].ask,
+                    bid: that.usuarios[i].bid,
+                    price:that.usuarios[i].price
+
+                }
+            })
+				.then(function (response) {
+					console.log(response);
+					//console.log(app.newUser)
+					if (response.data.error) {
+                        console.log("Valiendo doble")
+                       
+					} else {
+						console.log("entro melo")
+						
+					}
+				});
+      }
+      };
+         
+      request.send();
+    console.log(auxiliar.length)
+   
+      
     }
+  }
 };
 </script>
+
+<style>
+button {
+  padding: 0 15px;
+  border: 0;
+  background: #02a2ff;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: 0;
+}
+
+table.list {
+  width: 100%;
+}
+table.list tr {
+  margin: 5px !important;
+
+  border: 1px solid #fff;
+}
+table.list th {
+  background: #02a2ff;
+  padding: 2px;
+  text-align: center;
+}
+.crud_header {
+  background: #e0e0e0;
+  padding: 35px 22px 20px 20px;
+}
+table.list tr td {
+  padding: 10px;
+
+  margin: 2px !important;
+
+  background: #ddd;
+
+  overflow: hidden;
+
+  text-align: center;
+
+  margin-top: 5px;
+
+  border-right: 1px solid #fff;
+}
+
+.modalheading {
+  background: #fff;
+  padding: 5px;
+  font-size: 20px;
+  line-height: 32px;
+}
+.modalcontent {
+  padding: 10px;
+}
+table.form {
+  width: 100%;
+}
+.form tr {
+  text-align: center;
+  border-bottom: 5px solid #b6b6b6;
+}
+.form td {
+  text-align: left;
+  margin: 0 10px;
+  border: 5px solid #b6b6b6;
+}
+.form th {
+  text-align: right;
+
+  border-right: 5px solid #b6b6b6;
+}
+.margin {
+  margin: 10px 0;
+}
+.center {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+.form td input {
+  padding: 5px 10px;
+  outline: 0;
+}
+</style>

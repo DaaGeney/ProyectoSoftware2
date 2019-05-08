@@ -49,28 +49,22 @@ if ($action == 'createuser') {
 		$res['message'] = "Error al registrar" ;
 	}
 }
-
-if ($action == 'updateuser') {
-	$id = $_POST['id'];
-	$nombre = $_POST['nombre'];
-	$apellido = $_POST['apellido'];
-	$correo = $_POST['correo'];
-	$clave = $_POST['clave'];
-	$credencial = $_POST['credencial'];
-	$idlista = $_POST['idlista'];
-	$idprograma = $_POST['idprograma'];
-	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
-	correo='$correo', credencial = '$credencial',
-	idlista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
-	 estado = 'activo'
-	  WHERE id = '$id'");
+if ($action == 'createdivisa') {
+	$symbol =$_GET['symbol'];
+	$price = $_GET['price'];
+	$bid = $_GET['bid'];
+	$ask = $_GET['ask'];
+	$result = $conn->query("DELETE FROM `roles` WHERE `roles`.`symbol` = '$symbol'");
+	$result = $conn->query("INSERT INTO `roles` (`symbol`, `price`, `bid`,`ask`) VALUES ('$symbol','$price', '$bid','$ask') ");
 	if ($result) {
-		$res['message'] = "Usuario actualizado correctamente!";
+		$res['message'] = "Usuario creado correctamente";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "No se ha podido actualizar el usuario";
+		$res['message'] = "Error al registrar" ;
 	}
 }
+
+
 
 if ($action == 'deleteuser') {
 	$id = $_POST['id'];
@@ -82,16 +76,7 @@ if ($action == 'deleteuser') {
 		$res['message'] = "No se ha podido cambiar el estado del usuario";
 	}
 }
-if ($action == 'deleterol') {
-	$id = $_POST['id'];
-	$result = $conn->query("DELETE FROM `roles` WHERE `id` = '$id'");	
-	if ($result) {
-		$res['message'] = "Rol eliminado!";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "No se ha podido eliminar el Rol";
-	}
-}
+
 $conn -> close();
 header("Content-type: application/json");
 echo json_encode($res);

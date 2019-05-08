@@ -76,12 +76,10 @@ export default {
 					//console.log(app.newUser)
 					if (response.data.error) {
                         console.log("Valiendo doble")
-                        //app.errorUserMessage = response.data.message;
-						//console.log(response.data.message)
+                       
 					} else {
 						console.log("entro melo")
-						//app.successUserMessage = response.data.message;
-						//app.getAllUsers();
+						
 					}
 				});
 		},
