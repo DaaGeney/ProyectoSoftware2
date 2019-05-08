@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h1>BTA Divisas</h1>
+        <h1 style="display:inline">BTA Divisas</h1>
+        <p style="float:right; display: inline">
+            <router-link to="/login">Cerrar sesión</router-link>
+        </p><hr>
         <h3>Users from secure api end point:</h3>
         <em v-if="users.loading">Loading users...</em>
         <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
@@ -12,9 +15,6 @@
                 <span v-else> - <a @click="deleteUser(user.id)" class="text-danger">Delete</a></span>
             </li>
         </ul>
-        <p>
-            <router-link to="/login">Cerrar sesión</router-link>
-        </p>
     </div>
 </template>
 
