@@ -1,7 +1,10 @@
 <template>
   <div>
-    <h1>Bienvenido {{account.user.firstName}}!</h1>
-    <h3>Users from secure api end point:</h3>
+    <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
+    <p style="display:inline; float:right">
+      <router-link to="/login">Logout</router-link>
+    </p>
+    <h3></h3>
     <em v-if="users.loading">Loading users...</em>
     <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
     <ul v-if="users.items">
@@ -14,28 +17,11 @@
         <span v-else>
           -
           <a @click="deleteUser(user.id)" class="text-danger">Eliminar mi usuario</a>
+          <br>
+           <a @click="cargarFavorito(user.username)" class="text-danger">cargar favoritos</a>
         </span>
       </li>
     </ul>
-    <table class="list">
-      <tr>
-        <th>SYMBOl</th>
-        <th>PRICE</th>
-        <th>ASK</th>
-        <th>BID</th>
-        <th>OPCION</th>
-      </tr>
-      <tr v-for="usr in usuarios">
-        <td>{{usr.symbol}}</td>
-        <td>{{usr.price}}</td>
-        <td>{{usr.ask}}</td>
-        <td>{{usr.bid}}</td>
-
-        <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
-        </td>
-      </tr>
-    </table>
     <table class="list">
       <tr>
         <th>SYMBOl</th>
@@ -55,9 +41,25 @@
         </td>
       </tr>
     </table>
-    <p>
-      <router-link to="/login">Logout</router-link>
-    </p>
+    <table class="list">
+      <tr>
+        <th>SYMBOl</th>
+        <th>PRICE</th>
+        <th>ASK</th>
+        <th>BID</th>
+        <th>OPCION</th>
+      </tr>
+      <tr v-for="usr in usuarios">
+        <td>{{usr.symbol}}</td>
+        <td>{{usr.price}}</td>
+        <td>{{usr.ask}}</td>
+        <td>{{usr.bid}}</td>
+
+        <td>
+          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -69,12 +71,14 @@ export default {
   data() {
     return {
       usuarios: [],
+      favoritos: [],
       clickedUser: {},
       id: ""
     };
   },
   mounted() {
     this.getAllu();
+    this.cargarFavorito()
   },
   computed: {
     ...mapState({
@@ -174,10 +178,32 @@ export default {
                         console.log("Error metiendo fav")
                        
 					} else {
-						console.log("fav dentro melo")
+                        console.log("fav dentro melo")
+                        alert("Agregado a favoritos");
 						
 					}
 				});
+    },
+    cargarFavorito(id){
+        console.log(id)
+        var that = this;
+      var requestListado = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
+    var  auxiliar = [];
+          
+      // Open a new connection, using the GET request on the URL endpoint
+      var string, string2;
+
+      requestListado.open(
+        "GET",
+        "http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=getfav&user_id=" + id,
+        true
+      );
+      requestListado.onload = function() {
+         var json = JSON.parse(request.responseText);
+         console.log(json)
+      };
+      requestListado.send();
     }
 
   }

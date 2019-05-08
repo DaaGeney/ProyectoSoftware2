@@ -25,15 +25,6 @@ if ($action == 'readusers') {
 	$res['users'] = $users;
 	
 }
-//if($action=='search'){
-//	$id = $_GET['id'];
-//$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='activo'");
-//	$users = array();
-//	while ($row = $result->fetch_assoc()){
-//		array_push($users, $row);
-//	}
-//	$res['users'] = $users;
-//}
 
 // Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
@@ -67,13 +58,12 @@ if ($action == 'getfav') {
 	$user_id =$_GET['user_id'];
 
 
-	$result = $conn->query("SELECT * from `favoritos` where `user_id`='$user_id') ");
-	if ($result) {
-		$res['message'] = "correctamente";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al traer favoritos" ;
+	$result = $conn->query("SELECT * from `favoritos` where `user_id`='$user_id'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
 	}
+	$res['users'] = $users;
 }
 
 if ($action == 'createdivisa') {
