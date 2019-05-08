@@ -4,16 +4,26 @@
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-
-$conn = new mysqli("localhost", "root", "", "web");
+//123!\"·QWE
+$conn = new mysqli("localhost", "root", "", "software");
 if ($conn->connect_error) {
 	die("Database connection established Failed..");
 } 
 $res = array('error' => false);
 $action = 'readusers';
-$action = 'readroles';
+
 if (isset($_GET['action'])) {
 	$action = $_GET['action'];
+}
+//Lee usuarios de la base de datos desde la api
+if ($action == 'readusers') {
+	$result = $conn->query("SELECT * from usuarios");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+	
 }
 if($action=='search'){
 	$id = $_GET['id'];
@@ -24,31 +34,14 @@ $result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='
 	}
 	$res['users'] = $users;
 }
-if ($action == 'readusers') {
-	$result = $conn->query("SELECT * from usuario");
-	$users = array();
-	while ($row = $result->fetch_assoc()){
-		array_push($users, $row);
-	}
-	$res['users'] = $users;
-	
-}
-if ($action == 'readroles') {
-	$result = $conn->query("SELECT * FROM `roles`");
-	$roles = array();
-	while ($row = $result->fetch_assoc()){
-		array_push($roles, $row);
-	}
-	$res['roles'] = $roles;
-	
-}
+
+// Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
 	$id = $_POST['id'];
 	$nombre = $_POST['nombre'];
 	$apellido = $_POST['apellido'];
-	$clave = $_POST['clave'];
-	
-	$result = $conn->query("INSERT INTO `usuario` (`id`, `nombre`, `apellido`,`clave`) VALUES (	'$id','$nombre', '$apellido','$clave') ");
+	$contraseña = $_POST['contraseña'];
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`clave`) VALUES ('$id','$nombre', '$apellido','$contraseña') ");
 	if ($result) {
 		$res['message'] = "Usuario creado correctamente";
 	} else{
@@ -56,18 +49,7 @@ if ($action == 'createuser') {
 		$res['message'] = "No se ha podido crear el usuario";
 	}
 }
-if ($action == 'createrol') {
-	$id = $_POST['id'];
-	$nombre = $_POST['nombre'];
-	$descripcion = $_POST['descripcion'];
-	$result = $conn->query("INSERT INTO `roles` (`id`, `nombre`, `descripcion`) VALUES ('$id', '$nombre', '$descripcion')");
-	if ($result) {
-		$res['message'] = "Rol creado correctamente";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "No se ha podido crear el rol";
-	}
-}
+
 if ($action == 'updateuser') {
 	$id = $_POST['id'];
 	$nombre = $_POST['nombre'];
@@ -89,18 +71,7 @@ if ($action == 'updateuser') {
 		$res['message'] = "No se ha podido actualizar el usuario";
 	}
 }
-if ($action == 'updaterol') {
-	$id = $_POST['id'];
-	$nombre = $_POST['nombre'];
-	$descripcion = $_POST['descripcion'];
-	$result = $conn->query("UPDATE `roles` SET `nombre` = '$nombre',`descripcion`='$descripcion' WHERE `id` = '$id'");
-	if ($result) {
-		$res['message'] = "Rol actualizado correctamente!";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "No se ha podido actualizar el rol";
-	}
-}
+
 if ($action == 'deleteuser') {
 	$id = $_POST['id'];
 	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	

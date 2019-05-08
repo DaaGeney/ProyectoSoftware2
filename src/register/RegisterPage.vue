@@ -62,19 +62,21 @@ export default {
         }, 
         saveUser: function () {
  
-			
+			var params = {
+    data1: 'string',
+}
 			axios.post("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
                 params:{
                     id: 12,
-                    nombre: this.user.firstName,
-                    apellido: this.user.firstName,
-                    clave:this.user.firstName
+                    nombre: "this.user.firstName",
+                    apellido: "this.user.firstName",
+                    clave:"this.user.firstName"
 
                 }
             })
 				.then(function (response) {
 					console.log(response);
-					console.log(app.newUser)
+					//console.log(app.newUser)
 					if (response.data.error) {
                         console.log("Valiendo doble")
                         //app.errorUserMessage = response.data.message;
