@@ -62,9 +62,6 @@ export default {
         }, 
         saveUser: function () {
  
-			var params = {
-    data1: 'string',
-}
 			axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
                 params:{
                     id: this.user.username,
