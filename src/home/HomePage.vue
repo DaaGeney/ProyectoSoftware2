@@ -1,11 +1,12 @@
 <template>
   <div>
+    
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
       <router-link to="/login">Logout</router-link>
     </p>
-    <h3></h3>
-    <em v-if="users.loading">Loading users...</em>
+  
+
     <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
     <ul v-if="users.items">
       <li v-for="user in users.items" :key="user.id">
@@ -28,7 +29,7 @@
         <th>PRICE</th>
         <th>ASK</th>
         <th>BID</th>
-        <th>OPCION</th>
+        <th>DELETE</th>
       </tr>
       <tr v-for="usr in favoritos">
         <td>{{usr.symbol}}</td>
@@ -37,7 +38,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
+          <button @click=" favorite(usr.symbol,account.user.username)">Eliminar</button>
         </td>
       </tr>
     </table>
@@ -152,7 +153,7 @@ export default {
                         console.log("error: " +response.data.error)
                        
 					} else {
-						console.log("entro melo")
+						//console.log("entro melo")
 						
 					}
 				});
@@ -181,6 +182,7 @@ export default {
 					} else {
                         //console.log("fav dentro melo")
                         alert("Agregado a favoritos");
+                        
 						
 					}
 				});

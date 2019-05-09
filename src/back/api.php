@@ -54,6 +54,8 @@ if ($action == 'createfav') {
 	}
 }
 
+
+
 if ($action == 'getfav') {
 	$user_id =$_GET['user_id'];
 
