@@ -78,7 +78,7 @@ export default {
   },
   mounted() {
     this.getAllu();
-    this.cargarFavorito()
+    //this.cargarFavorito()
   },
   computed: {
     ...mapState({
@@ -149,7 +149,7 @@ export default {
 					console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
-                        console.log("Valiendo doble")
+                        console.log("error: " +response.data.error)
                        
 					} else {
 						console.log("entro melo")
@@ -175,10 +175,11 @@ export default {
 					console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
-                        console.log("Error metiendo fav")
+                        //console.log("Error metiendo fav")
+                        alert("Ya ha sido registrado como favorito")
                        
 					} else {
-                        console.log("fav dentro melo")
+                        //console.log("fav dentro melo")
                         alert("Agregado a favoritos");
 						
 					}
@@ -187,12 +188,12 @@ export default {
     cargarFavorito(id){
         console.log(id)
         var that = this;
-      var requestListado = new XMLHttpRequest();
-      var request = new XMLHttpRequest();
-    var  auxiliar = [];
+        var requestListado = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
+      var  auxiliar = [];
           
-      // Open a new connection, using the GET request on the URL endpoint
-      var string, string2;
+      
+      var string;
 
       requestListado.open(
         "GET",
@@ -200,8 +201,14 @@ export default {
         true
       );
       requestListado.onload = function() {
-         var json = JSON.parse(request.responseText);
-         console.log(json)
+         var json = JSON.parse(requestListado.responseText);
+         json = json.users
+  
+          for(var i = 0; i<json.length; i++){
+            auxiliar[i]= { "symbol": json[i].symbol_id, "price": json[i].price,"bid":json[i].bid, "ask": json[i].ask} 
+ 
+          }
+          that.favoritos=auxiliar;
       };
       requestListado.send();
     }

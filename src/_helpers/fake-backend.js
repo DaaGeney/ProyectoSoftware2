@@ -1,25 +1,25 @@
-// array in local storage for registered users
+// Arreglo en almacenamiento local para usuarios registrados.
 let users = JSON.parse(localStorage.getItem('users')) || [];
     
 export function configureFakeBackend() {
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
         return new Promise((resolve, reject) => {
-            // wrap in timeout to simulate server api call
+            // Ajuste en el tiempo de espera para simular la llamada api del servidor
             setTimeout(() => {
 
-                // authenticate
+                // autenticar
                 if (url.endsWith('/users/authenticate') && opts.method === 'POST') {
                     // get parameters from post request
                     let params = JSON.parse(opts.body);
 
-                    // find if any user matches login credentials
+                    // encontrar si algún usuario coincide con las credenciales de inicio de sesión
                     let filteredUsers = users.filter(user => {
                         return user.username === params.username && user.password === params.password;
                     });
 
                     if (filteredUsers.length) {
-                        // if login details are valid return user details and fake jwt token
+                        // devuelve los detalles del usuario y el token jwt
                         let user = filteredUsers[0];
                         let responseJson = {
                             id: user.id,
@@ -30,7 +30,6 @@ export function configureFakeBackend() {
                         };
                         resolve({ ok: true, text: () => Promise.resolve(JSON.stringify(responseJson)) });
                     } else {
-                        // else return error
                         reject('Username or password is incorrect');
                     }
 

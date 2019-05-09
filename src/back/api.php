@@ -58,7 +58,7 @@ if ($action == 'getfav') {
 	$user_id =$_GET['user_id'];
 
 
-	$result = $conn->query("SELECT * from `favoritos` where `user_id`='$user_id'");
+	$result = $conn->query("SELECT `favoritos`.`symbol_id`,`roles`.`price`, `roles`.`bid`,`roles`.`ask` from `favoritos`,`roles` where `favoritos`.`symbol_id`=`roles`.`symbol` and `favoritos`.`user_id`='$user_id'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
