@@ -26,6 +26,24 @@ if ($action == 'readusers') {
 	
 }
 
+
+//Actualiza un usuario en la base de datos
+if ($action == 'updateuser') {
+	$id = $_GET['id'];
+	$nombre = $_GET['nombre'];
+	$apellido = $_GET['apellido'];
+	$clave = $_GET['clave'];
+	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
+	 clave = '$clave' where id='$id'");
+	if ($result) {
+		$res['message'] = "Usuario actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el usuario";
+	}
+}
+
+
 // Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
 	$id =$_GET['id'];
@@ -41,6 +59,21 @@ if ($action == 'createuser') {
 	}
 }
 
+//Elimina un usuario
+if ($action == 'deleteuser') {
+	$id =$_GET['id'];
+
+	$result = $conn->query("DELETE  from  `usuarios` where `id` ='$id'  ");
+	if ($result) {
+		$res[$result];
+		$res['message'] = "Usuario eliminado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al eliminar" ;
+	}
+}
+
+//Crea un nuevo favorito
 if ($action == 'createfav') {
 	$user_id =$_GET['user_id'];
 	$symbol = $_GET['symbol'];
@@ -54,6 +87,7 @@ if ($action == 'createfav') {
 	}
 }
 
+//Elimina una divisa favorita
 if ($action == 'deletefav') {
 	$user_id =$_GET['user_id'];
 	$symbol = $_GET['symbol'];
@@ -79,6 +113,7 @@ if ($action == 'getfav') {
 	$res['users'] = $users;
 }
 
+//Crea una divisa
 if ($action == 'createdivisa') {
 	$symbol =$_GET['symbol'];
 	$price = $_GET['price'];

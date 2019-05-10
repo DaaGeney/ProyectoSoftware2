@@ -55,7 +55,7 @@ export default {
         }, 
         getAllUsers: function () {
 			console.log("ENTRO PERO VALIO")
-			axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=readusers")
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=readusers")
 				.then(function (response) {
                     console.log(response.data.users)
                     console.log("uno")

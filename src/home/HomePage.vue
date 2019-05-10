@@ -3,27 +3,17 @@
     
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
-      <router-link to="/login">Salir</router-link>
-    </p><hr>
+      <router-link to="/login">Logout</router-link>
+      <a @click="showingModal = true;">Editar usuario</a> 
+    </p>
   
 
-    <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
-    <ul v-if="users.items">
-      <li v-for="user of users.items" :key="user.id" >
-        
-        {{user.firstName + ' ' + user.lastName}}
-        <span v-if="user.deleting">
-          <em>- Deleting...</em>
-        </span>
-        <span v-else-if="user.deleteError" class="text-danger">- ERROR: {{user.deleteError}}</span>
-        <span v-else>
-          -
-          <a @click="deleteUser(user.id)" class="text-danger">Eliminar mi usuario</a>
-          <br>
-           <a @click="cargarFavorito(user.username)" class="text-danger">Cargar favoritos</a>
-        </span>
-      </li>
-    </ul>
+    <hr>
+    <span>
+      <a @click="cargarFavorito(account.user.username)" class="text-danger">cargar favoritos</a>
+      <br>
+      <a @click="deleteUser(account.user.id)" v-on:click="deleteus(account.user.username)" class="text-danger">Eliminar mi usuario</a>
+    </span>
     <table class="list">
       <tr>
         <th>SYMBOl</th>
@@ -39,7 +29,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">Eliminar</button>
+          <button @click=" deletefav(usr.symbol,account.user.username)">Eliminar</button>
         </td>
       </tr>
     </table>
@@ -62,6 +52,46 @@
         </td>
       </tr>
     </table>
+    <!--editar un nuevo usuario-------------------------------------------------------------------------------->
+			<div class="modal col-md-6" id="addmodal" v-if="showingModal">
+				<div class="modalheading">
+					<p class="left">Actualizar usuario</p>
+					<p class="right close" @click="showingModal = false;">x</p>
+					<div class="fix"></div>
+				</div>
+				<div class="modalbody">
+					<div class="modalcontent">
+						<table class="form">
+							<tr>
+								<th>UserName</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.username" disabled></td>
+							</tr>
+							<tr>
+              <tr>
+								<th>Nombre</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.nombre"></td>
+							</tr>
+							<tr>
+								<th>Apellido</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.lastName" v-model="clickedUser.apellido"></td>
+							</tr>
+
+							<tr>
+								<th>Clave</th>
+								<th>:</th>
+								<td><input type="text" placeholder="clave"  v-model="clickedUser.clave" ></td>
+							</tr>
+							
+						</table>
+						<div class="margin"></div>
+						<button class="center" @click="showingModal = false; updateUser()     ">ACEPTAR</button>
+						<div class="margin"></div>
+					</div>
+				</div>
+			</div>
   </div>
 </template>
 
@@ -73,9 +103,12 @@ export default {
   data() {
     return {
       usuarios: [],
+  
       favoritos: [],
+
+      id: "",
       clickedUser: {},
-      id: ""
+      showingModal: false
     };
   },
   mounted() {
@@ -138,7 +171,7 @@ export default {
             console.log(auxiliar)
             that.usuarios = auxiliar;
             for(var i = 0; i<10;i++){
-            axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createdivisa", {
+            axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createdivisa", {
                 params:{
                     symbol: that.usuarios[i].symbol,
                     ask: that.usuarios[i].ask,
@@ -166,7 +199,7 @@ export default {
     },
     favorite(usera, first){
         console.log(first)
-        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createfav", {
+        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createfav", {
                 params:{
                     user_id:first,
                     symbol: usera
@@ -189,8 +222,7 @@ export default {
 				});
     },
     deletefav(usera, first){
-        console.log(first)
-        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deletefav", {
+        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deletefav", {
                 params:{
                     user_id:first,
                     symbol: usera
@@ -212,7 +244,30 @@ export default {
 					}
 				});
     },
-    cargarFavorito(id){
+        deleteus(username){
+          	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deleteuser", {
+                params:{
+                    id:username
+                }
+            })
+				.then(function (response) {
+					console.log(response);
+					//console.log(app.newUser)
+					if (response.data.error) {
+                        //console.log("Error metiendo fav")
+                        alert("Error al eliminar")
+                       
+					} else {
+                        //console.log("fav dentro melo")
+                        alert("Eliminado correctamente");
+                        
+						
+          
+          }
+				});
+
+    }
+    ,cargarFavorito(id){
         console.log(id)
         var that = this;
         var requestListado = new XMLHttpRequest();
@@ -224,7 +279,7 @@ export default {
 
       requestListado.open(
         "GET",
-        "http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=getfav&user_id=" + id,
+        "http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getfav&user_id=" + id,
         true
       );
       requestListado.onload = function() {
@@ -238,7 +293,31 @@ export default {
           that.favoritos=auxiliar;
       };
       requestListado.send();
-    }
+    },
+    //Actualiza un usuario dependiendo del id de este
+		updateUser: function () {
+      //var that = this;
+      console.log(app.clickedUser)
+			var formData = app.toFormData(app.clickedUser);
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", formData)
+				.then(function (response) {
+					console.log(response);
+					app.clickedUser = {};
+					if (response.data.error) {
+						app.errorUserMessage = response.data.message;
+					} else {
+						that.successUserMessage = response.data.message;
+					}
+				});
+		},
+    //Traduce los datos a la tabla
+		toFormData: function (obj) {
+			var form_data = new FormData();
+			for (var key in obj) {
+				form_data.append(key, obj[key]);
+			}
+			return form_data;
+		},
 
   }
 };
@@ -327,5 +406,67 @@ table.form {
 .form td input {
   padding: 5px 10px;
   outline: 0;
+}
+.modal{
+	top: 99px;
+	left:0;
+	right:0;
+	bottom: auto;
+	position: fixed;
+	background: #b5b5b5fc;
+	margin: 0 auto;
+	display: block;
+	padding: 0;
+	height: auto;
+	box-shadow: 0 0 130px 28px #00000073;
+}
+.modalheading{
+	background: #fff;
+	padding: 5px;
+	font-size: 20px;
+	line-height: 32px;
+}
+.modalcontent {
+    padding: 10px;
+}
+table.form {
+    width: 100%;
+}
+.form tr{
+text-align: center;
+border-bottom: 5px solid #b6b6b6;
+}
+.form td{
+text-align: left;
+margin: 0 10px;
+border: 5px solid #b6b6b6;
+}
+.form th{
+	
+text-align: right;
+	
+border-right: 5px solid #b6b6b6;
+}
+.margin{
+	margin: 10px 0;
+}
+.center {
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+p.errorMessage {
+    background: #ffbaba;
+    padding: 10px;
+    border-left: 5px solid #f00;
+}
+p.successMessage {
+    background: #a2ffa2;
+    padding: 10px;
+    border-left: 5px solid #008c1e;
+}
+.form td input {
+    padding:5px 10px;
+    outline: 0;
 }
 </style>

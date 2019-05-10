@@ -62,8 +62,8 @@ export default {
             });
         }, 
         saveUser: function () {
-            //Conecta con la base de datos
-			axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
+ 
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createuser", {
                 params:{
                     //Parametros dados para agregar un usuario a la base de datos
                     id: this.user.username,
@@ -86,7 +86,8 @@ export default {
 						
 					}
 				});
-		},
+        },
+        
     }
 };
 </script>
