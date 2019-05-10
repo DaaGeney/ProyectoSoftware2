@@ -10,7 +10,7 @@ export function configureFakeBackend() {
 
                 // autenticar
                 if (url.endsWith('/users/authenticate') && opts.method === 'POST') {
-                    // get parameters from post request
+                    // Obtiene los parametros del post
                     let params = JSON.parse(opts.body);
 
                     // encontrar si algún usuario coincide con las credenciales de inicio de sesión
@@ -30,96 +30,91 @@ export function configureFakeBackend() {
                         };
                         resolve({ ok: true, text: () => Promise.resolve(JSON.stringify(responseJson)) });
                     } else {
-                        reject('Username or password is incorrect');
+                        reject('Nombre de usuario o contraseña incorrectos');
                     }
 
                     return;
                 }
 
-                // get users
+                // Obtener usuarios
                 if (url.endsWith('/users') && opts.method === 'GET') {
-                    // check for fake auth token in header and return users if valid, this security is implemented server side in a real application
                     if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
                         resolve({ ok: true, text: () => Promise.resolve(JSON.stringify(users))});
                     } else {
-                        // return 401 not authorised if token is null or invalid
+                        // devuelve 401 no autorizado si el token es nulo o no válido
                         reject('Unauthorised');
                     }
 
                     return;
                 }
 
-                // get user by id
+                // Obtener usuarios por id
                 if (url.match(/\/users\/\d+$/) && opts.method === 'GET') {
-                    // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
                     if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
-                        // find user by id in users array
+                        // Encuentra usuarios por el id en el arreglo de usuarios
                         let urlParts = url.split('/');
                         let id = parseInt(urlParts[urlParts.length - 1]);
                         let matchedUsers = users.filter(user => { return user.id === id; });
                         let user = matchedUsers.length ? matchedUsers[0] : null;
 
-                        // respond 200 OK with user
+                        // devuelve 200 od + el usuario
                         resolve({ ok: true, text: () => JSON.stringify(user)});
                     } else {
-                        // return 401 not authorised if token is null or invalid
+                        // devuelve 401 no autorizado si el token es nulo o no válido
                         reject('Unauthorised');
                     }
 
                     return;
                 }
 
-                // register user
+                // registrar usuario
                 if (url.endsWith('/users/register') && opts.method === 'POST') {
-                    // get new user object from post body
                     let newUser = JSON.parse(opts.body);
 
-                    // validation
+                    // validacion
                     let duplicateUser = users.filter(user => { return user.username === newUser.username; }).length;
                     if (duplicateUser) {
-                        reject('Username "' + newUser.username + '" is already taken');
+                        reject('El nombre de usuario "' + newUser.username + '" ya está en uso');
                         return;
                     }
 
-                    // save new user
+                    // Guardar new user
                     newUser.id = users.length ? Math.max(...users.map(user => user.id)) + 1 : 1;
                     users.push(newUser);
                     localStorage.setItem('users', JSON.stringify(users));
 
-                    // respond 200 OK
+                    // responde 200 OK
                     resolve({ ok: true, text: () => Promise.resolve() });
 
                     return;
                 }
 
-                // delete user
+                // Eliminar usuario
                 if (url.match(/\/users\/\d+$/) && opts.method === 'DELETE') {
-                    // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
                     if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
-                        // find user by id in users array
+                        // Encuentra usuarios por el id
                         let urlParts = url.split('/');
                         let id = parseInt(urlParts[urlParts.length - 1]);
                         for (let i = 0; i < users.length; i++) {
                             let user = users[i];
                             if (user.id === id) {
-                                // delete user
+                                // Eliminando usuario
                                 users.splice(i, 1);
                                 localStorage.setItem('users', JSON.stringify(users));
                                 break;
                             }
                         }
 
-                        // respond 200 OK
+                        // responde 200 OK
                         resolve({ ok: true, text: () => Promise.resolve() });
                     } else {
-                        // return 401 not authorised if token is null or invalid
+                        // devuelve 401 no autorizado si el token es nulo o no válido
                         reject('Unauthorised');
                     }
 
                     return;
                 }
 
-                // pass through any requests not handled above
                 realFetch(url, opts).then(response => resolve(response));
 
             }, 500);

@@ -22,7 +22,7 @@
         <th>BID</th>
         <th>DELETE</th>
       </tr>
-      <tr v-for="usr in favoritos">
+      <tr v-for="usr in favoritos" :key="usr.symbol">
         <td>{{usr.symbol}}</td>
         <td>{{usr.price}}</td>
         <td>{{usr.ask}}</td>
@@ -41,14 +41,14 @@
         <th>BID</th>
         <th>OPCION</th>
       </tr>
-      <tr v-for="usr in usuarios">
+      <tr v-for="usr in usuarios" :key="usr.symbol">
         <td>{{usr.symbol}}</td>
         <td>{{usr.price}}</td>
         <td>{{usr.ask}}</td>
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
+          <button @click=" deletefav(usr.symbol,account.user.username)">❤+</button>
         </td>
       </tr>
     </table>
@@ -139,7 +139,7 @@ export default {
       var request = new XMLHttpRequest();
     var  auxiliar = [];
           
-      // Open a new connection, using the GET request on the URL endpoint
+      // Abre una nueva conexion, usando el req GET para traer la lista de las divisas
       var string, string2;
 
       requestListado.open(
@@ -191,7 +191,7 @@ export default {
                         console.log("error: " +response.data.error)
                        
 					} else {
-						//console.log("entro melo")
+						//console.log("entró melo")
 						
 					}
 				});
@@ -218,7 +218,7 @@ export default {
                         alert("Ya ha sido registrado como favorito")
                        
 					} else {
-                        //console.log("fav dentro melo")
+                        //console.log("fav entró melo")
                         alert("Agregado a favoritos");
                         
 						
@@ -241,7 +241,7 @@ export default {
                         alert("Error al eliminar")
                        
 					} else {
-                        //console.log("fav dentro melo")
+                        //console.log("fav entró melo")
                         alert("Eliminado correctamente");
                         
 						
@@ -332,6 +332,7 @@ export default {
 };
 </script>
 
+<!--Hoja de estilos-->
 <style>
 button {
   padding: 0 15px;

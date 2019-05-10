@@ -1,26 +1,26 @@
 <template>
     <div>
-        <h2>Registrar</h2>
+        <h2>Registrar</h2><hr>
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label for="firstName">Nombre</label>
                 <input type="text" v-model="user.firstName" v-validate="'required'" name="firstName" class="form-control" :class="{ 'is-invalid': submitted && errors.has('firstName') }" />
-                <div v-if="submitted && errors.has('firstName')" class="invalid-feedback">{{ errors.first('firstName') }}</div>
+                <div v-if="submitted && errors.has('firstName')" class="invalid-feedback">Se requiere este campo</div>
             </div>
             <div class="form-group">
                 <label for="lastName">Apellido</label>
                 <input type="text" v-model="user.lastName" v-validate="'required'" name="lastName" class="form-control" :class="{ 'is-invalid': submitted && errors.has('lastName') }" />
-                <div v-if="submitted && errors.has('lastName')" class="invalid-feedback">{{ errors.first('lastName') }}</div>
+                <div v-if="submitted && errors.has('lastName')" class="invalid-feedback">Se requiere este campo</div>
             </div>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" v-model="user.username" v-validate="'required'" name="username" class="form-control" :class="{ 'is-invalid': submitted && errors.has('username') }" />
-                <div v-if="submitted && errors.has('username')" class="invalid-feedback">{{ errors.first('username') }}</div>
+                <div v-if="submitted && errors.has('username')" class="invalid-feedback">Se requiere este campo</div>
             </div>
             <div class="form-group">
                 <label htmlFor="password">Clave</label>
                 <input type="password" v-model="user.password" v-validate="{ required: true, min: 6 }" name="password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('password') }" />
-                <div v-if="submitted && errors.has('password')" class="invalid-feedback">{{ errors.first('password') }}</div>
+                <div v-if="submitted && errors.has('password')" class="invalid-feedback">Se requiere este campo</div>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" :disabled="status.registering">Registrar</button>
@@ -37,6 +37,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
     data () {
         return {
+            //Datos del usuario que va a ser registrado
             user: {
                 firstName: '',
                 lastName: '',
@@ -64,6 +65,7 @@ export default {
  
 			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createuser", {
                 params:{
+                    //Parametros dados para agregar un usuario a la base de datos
                     id: this.user.username,
                     nombre: this.user.firstName,
                     apellido: this.user.lastName,
@@ -75,10 +77,13 @@ export default {
 					console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
-                        console.log("Valiendo doble")
+                        //Error al crear usuario
+                        console.log("Error al crear usuario")
                        
 					} else {
-						console.log("entro melo")
+                        //Usuario creado
+						console.log("Usuario creado correctamente")
+						
 					}
 				});
         },

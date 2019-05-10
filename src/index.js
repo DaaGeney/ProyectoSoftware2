@@ -11,7 +11,7 @@ import App from './app/App';
 Vue.use(VeeValidate);
 
 
-// setup fake backend
+// Configura el backend falso que se utiliza para el JWT
 import { configureFakeBackend } from './_helpers';
 configureFakeBackend();
 
