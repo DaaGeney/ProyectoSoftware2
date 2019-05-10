@@ -65,7 +65,7 @@
     <!--editar un nuevo usuario-------------------------------------------------------------------------------->
 			<div class="modal col-md-6" id="addmodal" v-if="showingModal">
 				<div class="modalheading">
-					<p class="left">Agregar nuevo usuario</p>
+					<p class="left">Actualizar usuario</p>
 					<p class="right close" @click="showingModal = false;">x</p>
 					<div class="fix"></div>
 				</div>
