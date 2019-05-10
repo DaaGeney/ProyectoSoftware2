@@ -4,26 +4,16 @@
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
       <router-link to="/login">Logout</router-link>
-      <a   @click="showingModal = true;">Editar usuario</a> 
+      <a @click="showingModal = true;">Editar usuario</a> 
     </p>
   
 
-    <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
-    <ul v-if="users.items">
-      <li v-for="user in users.items" :key="user.id">
-        {{user.firstName + ' ' + user.lastName}}
-        <span v-if="user.deleting">
-          <em>- Deleting...</em>
-        </span>
-        <span v-else-if="user.deleteError" class="text-danger">- ERROR: {{user.deleteError}}</span>
-        <span v-else>
-          -
-          <a @click="deleteUser(user.id)" v-on:click="deleteus(user.username)" class="text-danger">Eliminar mi usuario</a>
-          <br>
-           <a @click="cargarFavorito(user.username)" class="text-danger">cargar favoritos</a>
-        </span>
-      </li>
-    </ul>
+    <hr>
+    <span>
+      <a @click="cargarFavorito(account.user.username)" class="text-danger">cargar favoritos</a>
+      <br>
+      <a @click="deleteUser(account.user.id)" v-on:click="deleteus(account.user.username)" class="text-danger">Eliminar mi usuario</a>
+    </span>
     <table class="list">
       <tr>
         <th>SYMBOl</th>
@@ -181,7 +171,7 @@ export default {
             console.log(auxiliar)
             that.usuarios = auxiliar;
             for(var i = 0; i<10;i++){
-            axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createdivisa", {
+            axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createdivisa", {
                 params:{
                     symbol: that.usuarios[i].symbol,
                     ask: that.usuarios[i].ask,
@@ -209,7 +199,7 @@ export default {
     },
     favorite(usera, first){
         console.log(first)
-        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createfav", {
+        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createfav", {
                 params:{
                     user_id:first,
                     symbol: usera
@@ -232,7 +222,7 @@ export default {
 				});
     },
     deletefav(usera, first){
-        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deletefav", {
+        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deletefav", {
                 params:{
                     user_id:first,
                     symbol: usera
@@ -255,7 +245,7 @@ export default {
 				});
     },
         deleteus(username){
-          	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deleteuser", {
+          	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deleteuser", {
                 params:{
                     id:username
                 }
@@ -272,9 +262,10 @@ export default {
                         alert("Eliminado correctamente");
                         
 						
-					}
+          
+          }
 				});
-        	
+
     }
     ,cargarFavorito(id){
         console.log(id)
@@ -288,7 +279,7 @@ export default {
 
       requestListado.open(
         "GET",
-        "http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=getfav&user_id=" + id,
+        "http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getfav&user_id=" + id,
         true
       );
       requestListado.onload = function() {
@@ -308,7 +299,7 @@ export default {
       var that = this;
       console.log(that.clickedUser)
 			var formData = that.toFormData(that.clickedUser);
-			axios.post("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=updateuser", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", formData)
 				.then(function (response) {
 					console.log(response);
 					that.clickedUser = {};

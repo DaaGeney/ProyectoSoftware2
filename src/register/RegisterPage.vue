@@ -62,7 +62,7 @@ export default {
         }, 
         saveUser: function () {
  
-			axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=createuser", {
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createuser", {
                 params:{
                     id: this.user.username,
                     nombre: this.user.firstName,
