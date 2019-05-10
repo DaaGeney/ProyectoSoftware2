@@ -26,6 +26,8 @@ if ($action == 'readusers') {
 	
 }
 
+
+//Actualiza un usuario en la base de datos
 if ($action == 'updateuser') {
 	$id = $_GET['id'];
 	$nombre = $_GET['nombre'];
@@ -57,6 +59,7 @@ if ($action == 'createuser') {
 	}
 }
 
+//Elimina un usuario
 if ($action == 'deleteuser') {
 	$id =$_GET['id'];
 
@@ -70,6 +73,7 @@ if ($action == 'deleteuser') {
 	}
 }
 
+//Crea un nuevo favorito
 if ($action == 'createfav') {
 	$user_id =$_GET['user_id'];
 	$symbol = $_GET['symbol'];
@@ -83,6 +87,7 @@ if ($action == 'createfav') {
 	}
 }
 
+//Elimina una divisa favorita
 if ($action == 'deletefav') {
 	$user_id =$_GET['user_id'];
 	$symbol = $_GET['symbol'];
@@ -108,6 +113,7 @@ if ($action == 'getfav') {
 	$res['users'] = $users;
 }
 
+//Crea una divisa
 if ($action == 'createdivisa') {
 	$symbol =$_GET['symbol'];
 	$price = $_GET['price'];

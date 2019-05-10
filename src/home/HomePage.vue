@@ -87,7 +87,7 @@
 							
 						</table>
 						<div class="margin"></div>
-						<button class="center" @click="showingModal = false; updateUser() ">ACEPTAR</button>
+						<button class="center" @click="showingModal = false; updateUser()     ">ACEPTAR</button>
 						<div class="margin"></div>
 					</div>
 				</div>
@@ -296,13 +296,13 @@ export default {
     },
     //Actualiza un usuario dependiendo del id de este
 		updateUser: function () {
-      var that = this;
-      console.log(that.clickedUser)
-			var formData = that.toFormData(that.clickedUser);
+      //var that = this;
+      console.log(app.clickedUser)
+			var formData = app.toFormData(app.clickedUser);
 			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", formData)
 				.then(function (response) {
 					console.log(response);
-					that.clickedUser = {};
+					app.clickedUser = {};
 					if (response.data.error) {
 						app.errorUserMessage = response.data.message;
 					} else {

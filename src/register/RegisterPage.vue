@@ -79,10 +79,10 @@ export default {
                        
 					} else {
 						console.log("entro melo")
-						
 					}
 				});
-		},
+        },
+        
     }
 };
 </script>
