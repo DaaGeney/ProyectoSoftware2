@@ -271,7 +271,7 @@ export default {
 
     }
     ,cargarFavorito(id){
-        console.log(id)
+        //console.log(id)
         var that = this;
         var requestListado = new XMLHttpRequest();
         var request = new XMLHttpRequest();
@@ -314,7 +314,7 @@ export default {
 
                 })
 				.then(function (response) {
-					console.log(response);
+					//console.log(response);
 					that.clickedUser = {};
 					if (response.data.error) {
             that.errorUserMessage = response.data.message;
