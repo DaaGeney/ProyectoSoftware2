@@ -54,7 +54,18 @@ if ($action == 'createfav') {
 	}
 }
 
+if ($action == 'deletefav') {
+	$user_id =$_GET['user_id'];
+	$symbol = $_GET['symbol'];
 
+	$result = $conn->query("DELETE from  `favoritos` where `symbol_id` = '$symbol' and `user_id` ='$user_id' ");
+	if ($result) {
+		$res['message'] = "Favorito eliminado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al eliminar" ;
+	}
+}
 
 if ($action == 'getfav') {
 	$user_id =$_GET['user_id'];

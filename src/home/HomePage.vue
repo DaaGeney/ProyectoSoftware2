@@ -57,7 +57,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
+          <button @click=" deletefav(usr.symbol,account.user.username)">favorito</button>
         </td>
       </tr>
     </table>
@@ -182,6 +182,30 @@ export default {
 					} else {
                         //console.log("fav dentro melo")
                         alert("Agregado a favoritos");
+                        
+						
+					}
+				});
+    },
+    deletefav(usera, first){
+        console.log(first)
+        	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deletefav", {
+                params:{
+                    user_id:first,
+                    symbol: usera
+
+                }
+            })
+				.then(function (response) {
+					console.log(response);
+					//console.log(app.newUser)
+					if (response.data.error) {
+                        //console.log("Error metiendo fav")
+                        alert("Error al eliminar")
+                       
+					} else {
+                        //console.log("fav dentro melo")
+                        alert("Eliminado correctamente");
                         
 						
 					}
