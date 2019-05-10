@@ -3,13 +3,14 @@
     
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
-      <router-link to="/login">Logout</router-link>
-    </p>
+      <router-link to="/login">Salir</router-link>
+    </p><hr>
   
 
     <span v-if="users.error" class="text-danger">ERROR: {{users.error}}</span>
     <ul v-if="users.items">
-      <li v-for="user in users.items" :key="user.id">
+      <li v-for="user of users.items" :key="user.id" >
+        
         {{user.firstName + ' ' + user.lastName}}
         <span v-if="user.deleting">
           <em>- Deleting...</em>
@@ -19,7 +20,7 @@
           -
           <a @click="deleteUser(user.id)" class="text-danger">Eliminar mi usuario</a>
           <br>
-           <a @click="cargarFavorito(user.username)" class="text-danger">cargar favoritos</a>
+           <a @click="cargarFavorito(user.username)" class="text-danger">Cargar favoritos</a>
         </span>
       </li>
     </ul>
@@ -31,7 +32,7 @@
         <th>BID</th>
         <th>DELETE</th>
       </tr>
-      <tr v-for="usr in favoritos">
+      <tr v-for="usr in favoritos" :key="usr.symbol">
         <td>{{usr.symbol}}</td>
         <td>{{usr.price}}</td>
         <td>{{usr.ask}}</td>
@@ -50,14 +51,14 @@
         <th>BID</th>
         <th>OPCION</th>
       </tr>
-      <tr v-for="usr in usuarios">
+      <tr v-for="usr in usuarios" :key="usr.symbol">
         <td>{{usr.symbol}}</td>
         <td>{{usr.price}}</td>
         <td>{{usr.ask}}</td>
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" deletefav(usr.symbol,account.user.username)">favorito</button>
+          <button @click=" deletefav(usr.symbol,account.user.username)">❤+</button>
         </td>
       </tr>
     </table>
@@ -101,7 +102,7 @@ export default {
       var request = new XMLHttpRequest();
     var  auxiliar = [];
           
-      // Open a new connection, using the GET request on the URL endpoint
+      // Abre una nueva conexion, usando el req GET para traer la lista de las divisas
       var string, string2;
 
       requestListado.open(
@@ -153,7 +154,7 @@ export default {
                         console.log("error: " +response.data.error)
                        
 					} else {
-						//console.log("entro melo")
+						//console.log("entró melo")
 						
 					}
 				});
@@ -180,7 +181,7 @@ export default {
                         alert("Ya ha sido registrado como favorito")
                        
 					} else {
-                        //console.log("fav dentro melo")
+                        //console.log("fav entró melo")
                         alert("Agregado a favoritos");
                         
 						
@@ -204,7 +205,7 @@ export default {
                         alert("Error al eliminar")
                        
 					} else {
-                        //console.log("fav dentro melo")
+                        //console.log("fav entró melo")
                         alert("Eliminado correctamente");
                         
 						
@@ -243,6 +244,7 @@ export default {
 };
 </script>
 
+<!--Hoja de estilos-->
 <style>
 button {
   padding: 0 15px;

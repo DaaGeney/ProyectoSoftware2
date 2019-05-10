@@ -47,7 +47,7 @@ if ($action == 'createfav') {
 
 	$result = $conn->query("INSERT INTO `favoritos` (`symbol_id`, `user_id`) VALUES ('$symbol','$user_id') ");
 	if ($result) {
-		$res['message'] = "Usuario creado correctamente";
+		$res['message'] = "Favorito agregado";
 	} else{
 		$res['error'] = true;
 		$res['message'] = "Error al registrar" ;
@@ -87,10 +87,10 @@ if ($action == 'createdivisa') {
 	$result = $conn->query("DELETE FROM `roles` WHERE `roles`.`symbol` = '$symbol'");
 	$result = $conn->query("INSERT INTO `roles` (`symbol`, `price`, `bid`,`ask`) VALUES ('$symbol','$price', '$bid','$ask') ");
 	if ($result) {
-		$res['message'] = "Usuario creado correctamente";
+		$res['message'] = "Divisa creada";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "Error al registrar" ;
+		$res['message'] = "Error al crear la divisa" ;
 	}
 }
 
@@ -100,10 +100,10 @@ if ($action == 'deleteuser') {
 	$id = $_POST['id'];
 	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	
 	if ($result) {
-		$res['message'] = "Usuario ha pasado a inactivo";
+		$res['message'] = "Usuario ha sido eliminado";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "No se ha podido cambiar el estado del usuario";
+		$res['message'] = "No se ha podido eliminar el usuario";
 	}
 }
 

@@ -21,9 +21,9 @@ function login(username, password) {
     return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
-            // login successful if there's a jwt token in the response
+            // Ingresa si hay un JWT en la respuesta
             if (user.token) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                // Guarda los detalles del usuario y el JWT en el localStorage, para que la sesion no se cierre mientras navega
                 localStorage.setItem('user', JSON.stringify(user));
             }
 
@@ -32,7 +32,7 @@ function login(username, password) {
 }
 
 function logout() {
-    // remove user from local storage to log user out
+    // Elimina el usuario del localStorage, para cerrar la sesion
     localStorage.removeItem('user');
 }
 
@@ -75,7 +75,7 @@ function update(user) {
     return fetch(`${config.apiUrl}/users/${user.id}`, requestOptions).then(handleResponse);
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
+// nombre de función prefijado con guión bajo porque eliminar es una palabra reservada en javascript
 function _delete(id) {
     const requestOptions = {
         method: 'DELETE',
@@ -90,7 +90,7 @@ function handleResponse(response) {
         const data = text && JSON.parse(text);
         if (!response.ok) {
             if (response.status === 401) {
-                // auto logout if 401 response returned from api
+                // cierre de sesión automático si la respuesta de la API es 401
                 logout();
                 location.reload(true);
             }
