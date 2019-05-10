@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 //123!\"·QWE
-$conn = new mysqli("localhost", "root", "", "software");
+$conn = new mysqli("localhost", "root", "", "web");
 if ($conn->connect_error) {
 	die("Database connection established Failed..");
 } 
