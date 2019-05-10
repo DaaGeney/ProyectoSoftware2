@@ -38,7 +38,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">Eliminar</button>
+          <button @click=" deletefav(usr.symbol,account.user.username)">Eliminar</button>
         </td>
       </tr>
     </table>
@@ -57,7 +57,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" deletefav(usr.symbol,account.user.username)">favorito</button>
+          <button @click=" favorite(usr.symbol,account.user.username)">favorito</button>
         </td>
       </tr>
     </table>

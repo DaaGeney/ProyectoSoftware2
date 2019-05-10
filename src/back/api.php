@@ -96,16 +96,6 @@ if ($action == 'createdivisa') {
 
 
 
-if ($action == 'deleteuser') {
-	$id = $_POST['id'];
-	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	
-	if ($result) {
-		$res['message'] = "Usuario ha pasado a inactivo";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "No se ha podido cambiar el estado del usuario";
-	}
-}
 
 $conn -> close();
 header("Content-type: application/json");
