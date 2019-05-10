@@ -17,7 +17,7 @@
         <span v-else-if="user.deleteError" class="text-danger">- ERROR: {{user.deleteError}}</span>
         <span v-else>
           -
-          <a @click="deleteUser(user.id)" class="text-danger">Eliminar mi usuario</a>
+          <a @click="deleteUser(user.id)" v-on:click="deleteus(user.username)" class="text-danger">Eliminar mi usuario</a>
           <br>
            <a @click="cargarFavorito(user.username)" class="text-danger">cargar favoritos</a>
         </span>
@@ -188,7 +188,6 @@ export default {
 				});
     },
     deletefav(usera, first){
-        console.log(first)
         	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deletefav", {
                 params:{
                     user_id:first,
@@ -211,7 +210,29 @@ export default {
 					}
 				});
     },
-    cargarFavorito(id){
+        deleteus(username){
+          	axios.get("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=deleteuser", {
+                params:{
+                    id:username
+                }
+            })
+				.then(function (response) {
+					console.log(response);
+					//console.log(app.newUser)
+					if (response.data.error) {
+                        //console.log("Error metiendo fav")
+                        alert("Error al eliminar")
+                       
+					} else {
+                        //console.log("fav dentro melo")
+                        alert("Eliminado correctamente");
+                        
+						
+					}
+				});
+        	
+    }
+    ,cargarFavorito(id){
         console.log(id)
         var that = this;
         var requestListado = new XMLHttpRequest();

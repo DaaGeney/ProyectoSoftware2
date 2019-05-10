@@ -41,6 +41,19 @@ if ($action == 'createuser') {
 	}
 }
 
+if ($action == 'deleteuser') {
+	$id =$_GET['id'];
+
+	$result = $conn->query("DELETE  from  `usuarios` where `id` ='$id'  ");
+	if ($result) {
+		$res[$result];
+		$res['message'] = "Usuario eliminado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al eliminar" ;
+	}
+}
+
 if ($action == 'createfav') {
 	$user_id =$_GET['user_id'];
 	$symbol = $_GET['symbol'];
