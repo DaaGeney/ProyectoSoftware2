@@ -30,6 +30,7 @@ if ($action == 'readusers') {
 //Actualiza un usuario en la base de datos
 if ($action == 'updateuser') {
 	$id = $_GET['id'];
+	
 	$nombre = $_GET['nombre'];
 	$apellido = $_GET['apellido'];
 	$clave = $_GET['clave'];
@@ -43,7 +44,19 @@ if ($action == 'updateuser') {
 	}
 }
 
-
+if ($action == 'createuser') {
+	$id =$_GET['id'];
+	$nombre = $_GET['nombre'];
+	$apellido = $_GET['apellido'];
+	$clave = $_GET['clave'];
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`clave`) VALUES ('$id','$nombre', '$apellido','$clave') ");
+	if ($result) {
+		$res['message'] = "Usuario creado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "Error al registrar" ;
+	}
+}
 // Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
 	$id =$_GET['id'];

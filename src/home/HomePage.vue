@@ -65,7 +65,7 @@
 							<tr>
 								<th>UserName</th>
 								<th>:</th>
-								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.username" disabled></td>
+								<td><input type="text"  search :placeholder="account.user.username" v-model="clickedUser.username" readonly ></td>
 							</tr>
 							<tr>
               <tr>
@@ -87,7 +87,7 @@
 							
 						</table>
 						<div class="margin"></div>
-						<button class="center" @click="showingModal = false; updateUser()     ">ACEPTAR</button>
+						<button class="center" @click="showingModal = false;username( account.user.firstName ); updateUser()  ">ACEPTAR</button>
 						<div class="margin"></div>
 					</div>
 				</div>
@@ -103,7 +103,7 @@ export default {
   data() {
     return {
       usuarios: [],
-  
+      idusuario:"",
       favoritos: [],
 
       id: "",
@@ -129,6 +129,10 @@ export default {
       getAllUsers: "getAll",
       deleteUser: "delete"
     }),
+    username(username){
+      var that = this;
+      that.idusuario=username
+    },
     getAllu: function() {
       var that = this;
       var requestListado = new XMLHttpRequest();
@@ -295,29 +299,34 @@ export default {
       requestListado.send();
     },
     //Actualiza un usuario dependiendo del id de este
-		updateUser: function () {
+		updateUser() {
+       var that = this;
       //var that = this;
-      console.log(app.clickedUser)
-			var formData = app.toFormData(app.clickedUser);
-			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", formData)
+      
+   
+
+      axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", {
+                params:{
+                    id:that.idusuario,
+                    nombre:that.clickedUser.nombre,
+                    apellido:that.clickedUser.apellido,
+                    clave: that.clickedUser.clave
+                }
+
+                })
 				.then(function (response) {
 					console.log(response);
-					app.clickedUser = {};
+					that.clickedUser = {};
 					if (response.data.error) {
-						app.errorUserMessage = response.data.message;
+            that.errorUserMessage = response.data.message;
+            alert("error al actualizar")
 					} else {
-						that.successUserMessage = response.data.message;
+            that.successUserMessage = response.data.message;
+            alert("Actualizado correctamente en la BD")
 					}
 				});
 		},
-    //Traduce los datos a la tabla
-		toFormData: function (obj) {
-			var form_data = new FormData();
-			for (var key in obj) {
-				form_data.append(key, obj[key]);
-			}
-			return form_data;
-		},
+    
 
   }
 };
