@@ -48,7 +48,7 @@
         <td>{{usr.bid}}</td>
 
         <td>
-          <button @click=" deletefav(usr.symbol,account.user.username)">❤+</button>
+          <button @click=" favorite(usr.symbol,account.user.username)">❤+</button>
         </td>
       </tr>
     </table>
@@ -65,7 +65,7 @@
 							<tr>
 								<th>UserName</th>
 								<th>:</th>
-								<td><input type="text"  search :placeholder="account.user.username" v-model="clickedUser.username" readonly ></td>
+								<td><input type="text"  search :placeholder="account.user.username" v-model="clickedUser.username" readonly disabled ></td>
 							</tr>
 							<tr>
               <tr>
@@ -167,14 +167,14 @@ export default {
            
           var json = JSON.parse(request.responseText);
           // console.log("apunto")
-          for(var i = 0; i<10;i++){
+          for(var i = 0; i<100;i++){
             auxiliar[i]= { "symbol": json[i].symbol, "price": json[i].price,"bid":json[i].bid, "ask": json[i].ask}
              //console.log("auxili")
             //console.log(auxiliar)
             }
-            console.log(auxiliar)
+          //  console.log(auxiliar)
             that.usuarios = auxiliar;
-            for(var i = 0; i<10;i++){
+            for(var i = 0; i<100;i++){
             axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createdivisa", {
                 params:{
                     symbol: that.usuarios[i].symbol,
@@ -185,7 +185,7 @@ export default {
                 }
             })
 				.then(function (response) {
-					console.log(response);
+				//	console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
                         console.log("error: " +response.data.error)
@@ -199,7 +199,7 @@ export default {
       };
          
       request.send();
-    console.log(auxiliar.length)
+    //console.log(auxiliar.length)
     },
     favorite(usera, first){
         console.log(first)
@@ -211,7 +211,7 @@ export default {
                 }
             })
 				.then(function (response) {
-					console.log(response);
+				//	console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
                         //console.log("Error metiendo fav")
@@ -234,7 +234,7 @@ export default {
                 }
             })
 				.then(function (response) {
-					console.log(response);
+				//	console.log(response);
 					//console.log(app.newUser)
 					if (response.data.error) {
                         //console.log("Error metiendo fav")
@@ -264,8 +264,7 @@ export default {
 					} else {
                         //console.log("fav dentro melo")
                         alert("Eliminado correctamente");
-                        
-						
+                         location.href = "/login"			
           
           }
 				});
