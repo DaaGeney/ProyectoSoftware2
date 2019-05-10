@@ -26,6 +26,22 @@ if ($action == 'readusers') {
 	
 }
 
+if ($action == 'updateuser') {
+	$id = $_GET['id'];
+	$nombre = $_GET['nombre'];
+	$apellido = $_GET['apellido'];
+	$clave = $_GET['clave'];
+	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
+	 clave = '$clave' where id='$id'");
+	if ($result) {
+		$res['message'] = "Usuario actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el usuario";
+	}
+}
+
+
 // Crea un usuario en la base de datos por medio de la api
 if ($action == 'createuser') {
 	$id =$_GET['id'];

@@ -4,6 +4,7 @@
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
       <router-link to="/login">Logout</router-link>
+      <a   @click="showingModal = true;">Editar usuario</a> 
     </p>
   
 
@@ -61,6 +62,46 @@
         </td>
       </tr>
     </table>
+    <!--editar un nuevo usuario-------------------------------------------------------------------------------->
+			<div class="modal col-md-6" id="addmodal" v-if="showingModal">
+				<div class="modalheading">
+					<p class="left">Agregar nuevo usuario</p>
+					<p class="right close" @click="showingModal = false;">x</p>
+					<div class="fix"></div>
+				</div>
+				<div class="modalbody">
+					<div class="modalcontent">
+						<table class="form">
+							<tr>
+								<th>UserName</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.username" disabled></td>
+							</tr>
+							<tr>
+              <tr>
+								<th>Nombre</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.nombre"></td>
+							</tr>
+							<tr>
+								<th>Apellido</th>
+								<th>:</th>
+								<td><input type="text" search :placeholder="account.user.lastName" v-model="clickedUser.apellido"></td>
+							</tr>
+
+							<tr>
+								<th>Clave</th>
+								<th>:</th>
+								<td><input type="text" placeholder="clave"  v-model="clickedUser.clave" ></td>
+							</tr>
+							
+						</table>
+						<div class="margin"></div>
+						<button class="center" @click="showingModal = false; updateUser() ">ACEPTAR</button>
+						<div class="margin"></div>
+					</div>
+				</div>
+			</div>
   </div>
 </template>
 
@@ -72,9 +113,12 @@ export default {
   data() {
     return {
       usuarios: [],
+  
       favoritos: [],
+
+      id: "",
       clickedUser: {},
-      id: ""
+      showingModal: false
     };
   },
   mounted() {
@@ -258,7 +302,31 @@ export default {
           that.favoritos=auxiliar;
       };
       requestListado.send();
-    }
+    },
+    //Actualiza un usuario dependiendo del id de este
+		updateUser: function () {
+      var that = this;
+      console.log(that.clickedUser)
+			var formData = that.toFormData(that.clickedUser);
+			axios.post("http://localhost/vue-vuex-registration-login-example-master/src/back/api.php?action=updateuser", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedUser = {};
+					if (response.data.error) {
+						app.errorUserMessage = response.data.message;
+					} else {
+						that.successUserMessage = response.data.message;
+					}
+				});
+		},
+    //Traduce los datos a la tabla
+		toFormData: function (obj) {
+			var form_data = new FormData();
+			for (var key in obj) {
+				form_data.append(key, obj[key]);
+			}
+			return form_data;
+		},
 
   }
 };
@@ -346,5 +414,67 @@ table.form {
 .form td input {
   padding: 5px 10px;
   outline: 0;
+}
+.modal{
+	top: 99px;
+	left:0;
+	right:0;
+	bottom: auto;
+	position: fixed;
+	background: #b5b5b5fc;
+	margin: 0 auto;
+	display: block;
+	padding: 0;
+	height: auto;
+	box-shadow: 0 0 130px 28px #00000073;
+}
+.modalheading{
+	background: #fff;
+	padding: 5px;
+	font-size: 20px;
+	line-height: 32px;
+}
+.modalcontent {
+    padding: 10px;
+}
+table.form {
+    width: 100%;
+}
+.form tr{
+text-align: center;
+border-bottom: 5px solid #b6b6b6;
+}
+.form td{
+text-align: left;
+margin: 0 10px;
+border: 5px solid #b6b6b6;
+}
+.form th{
+	
+text-align: right;
+	
+border-right: 5px solid #b6b6b6;
+}
+.margin{
+	margin: 10px 0;
+}
+.center {
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+p.errorMessage {
+    background: #ffbaba;
+    padding: 10px;
+    border-left: 5px solid #f00;
+}
+p.successMessage {
+    background: #a2ffa2;
+    padding: 10px;
+    border-left: 5px solid #008c1e;
+}
+.form td input {
+    padding:5px 10px;
+    outline: 0;
 }
 </style>
