@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:auto">
     
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
