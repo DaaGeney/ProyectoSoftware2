@@ -6,93 +6,511 @@
       <router-link to="/login">Logout</router-link>
       <a @click="showingModal = true;">Editar usuario</a> 
     </p>
-  
 
-    <hr>
-    <span>
-      <a @click="cargarFavorito(account.user.username)" class="text-danger">cargar favoritos</a>
-      <br>
-      <a @click="deleteUser(account.user.id)" v-on:click="deleteus(account.user.username)" class="text-danger">Eliminar mi usuario</a>
-    </span>
-    <table class="list">
-      <tr>
-        <th>SYMBOl</th>
-        <th>PRICE</th>
-        <th>ASK</th>
-        <th>BID</th>
-        <th>DELETE</th>
-      </tr>
-      <tr v-for="usr in favoritos" :key="usr.symbol">
-        <td>{{usr.symbol}}</td>
-        <td>{{usr.price}}</td>
-        <td>{{usr.ask}}</td>
-        <td>{{usr.bid}}</td>
+    <div id="root">
 
-        <td>
-          <button @click=" deletefav(usr.symbol,account.user.username)">Eliminar</button>
-        </td>
-      </tr>
-    </table>
-    <table class="list">
-      <tr>
-        <th>SYMBOl</th>
-        <th>PRICE</th>
-        <th>ASK</th>
-        <th>BID</th>
-        <th>OPCION</th>
-      </tr>
-      <tr v-for="usr in usuarios" :key="usr.symbol">
-        <td>{{usr.symbol}}</td>
-        <td>{{usr.price}}</td>
-        <td>{{usr.ask}}</td>
-        <td>{{usr.bid}}</td>
+		<div class="">
+			<div class="crud_header">
+				<h1 class="left">Primer Sprint</h1>
 
-        <td>
-          <button @click=" favorite(usr.symbol,account.user.username)">❤+</button>
-        </td>
-      </tr>
-    </table>
-    <!--editar un nuevo usuario-------------------------------------------------------------------------------->
-			<div class="modal col-md-6" id="addmodal" v-if="showingModal">
-				<div class="modalheading">
-					<p class="left">Actualizar usuario</p>
-					<p class="right close" @click="showingModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
-						<table class="form">
-							<tr>
-								<th>UserName</th>
-								<th>:</th>
-								<td><input type="text"  search :placeholder="account.user.username" v-model="clickedUser.username" readonly disabled ></td>
-							</tr>
-							<tr>
-              <tr>
-								<th>Nombre</th>
-								<th>:</th>
-								<td><input type="text" search :placeholder="account.user.username" v-model="clickedUser.nombre"></td>
-							</tr>
-							<tr>
-								<th>Apellido</th>
-								<th>:</th>
-								<td><input type="text" search :placeholder="account.user.lastName" v-model="clickedUser.apellido"></td>
-							</tr>
+				<div class="fix"></div>
+			</div>
+			<div>
+				<input type="text" v-model="id">
+				<button @click="getOneUser()">Busqueda</button>
+				<button @click="getAllUsers()">Traer todo</button>
+			</div>
+			<div>
+				<input type="text" v-model="facultad">
+				<button @click="getFacultad();getProgramasFacultad()">Filtro facultad</button>
+			</div>
+			<div>
+				<input type="text" v-model="programa">
+				<button @click="getPrograma()">Filtro Pograma</button>
+			</div>
 
-							<tr>
-								<th>Clave</th>
-								<th>:</th>
-								<td><input type="text" placeholder="clave"  v-model="clickedUser.clave" ></td>
-							</tr>
-							
-						</table>
-						<div class="margin"></div>
-						<button class="center" @click="showingModal = false;username( account.user.firstName ); updateUser()  ">ACEPTAR</button>
-						<div class="margin"></div>
-					</div>
+			<h1 class="left">OCMS Gestion de usuarios y roles</h1>
+			<button class="right addnew" @click="showingModal = true;">Agregar usuario</button>
+			<button class="right addnew" @click="showingRolModal = true;">Agregar rol</button>
+			<button class="right addnew" @click="showingProgramaModal = true;">Agregar Programa</button>
+			<div class="fix"></div>
+		</div>
+		<hr>
+
+		<!--Notificaciones lista de programas--------------------------------------------------------------->
+		<p class="errorMessage" v-if="errorProgramaMessage">{{errorProgramaMessage}}</p>
+		<p class="successMessage" v-if="successProgramaMessage">{{successProgramaMessage}}</p>
+		<!--Notificaciones lista de roles--------------------------------------------------------------->
+		<p class="errorMessage" v-if="errorRolMessage">{{errorRolMessage}}</p>
+		<p class="successMessage" v-if="successRolMessage">{{successRolMessage}}</p>
+		<!--Notificaciones lista de usuarios--------------------------------------------------------------->
+		<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
+		<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
+
+		<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Facultad</th>
+				<th>Snies</th>
+				<th>Duracion</th>
+				<th>Modalidad</th>
+				<th>Reacreditacion</th>
+				<th>Icfes</th>
+				<th>Renovacion</th>
+				<th>Tipo</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+				<th>UOCs</th>
+			</tr>
+			<tr v-for="programa in programas">
+				<td>{{programa.id}}</td>
+				<td>{{programa.nombre}}</td>
+				<td>{{programa.facultad}}</td>
+				<td>{{programa.snies}}</td>
+				<td>{{programa.duracion}}</td>
+				<td>{{programa.modalidad}}</td>
+				<td>{{programa.reacreditacion}}</td>
+				<td>{{programa.icfes}}</td>
+				<td>{{programa.renovacion}}</td>
+				<td>{{programa.tipo}}</td>
+
+				<td><button @click="showingProgramaeditModal = true; selectPrograma(programa)">Editar</button></td>
+				<td><button @click="showingProgramadeleteModal = true; selectPrograma(programa)">Eliminar</button></td>
+				<td><button @click="location='../privilegios.html'">Definir UOCs</button></td>
+
+			</tr>
+		</table>
+
+		<hr>
+
+		<!--Lista de roles------------------------------------------------------------------------------>
+
+		<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Descripcion</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+				<th>Privilegios</th>
+			</tr>
+			<tr v-for="rol in roles">
+				<td>{{rol.id}}</td>
+				<td>{{rol.nombre}}</td>
+				<td>{{rol.descripcion}}</td>
+
+				<td><button @click="showingRoleditModal = true; selectRol(rol)">Editar</button></td>
+				<td><button @click="showingRoldeleteModal = true; selectRol(rol)">Eliminar</button></td>
+				<td><button @click="location='../privilegios.html'">Privilegios</button></td>
+			</tr>
+		</table>
+
+		<hr>
+
+		<!--Lista de usuarios------------------------------------------------------------------------------>
+		<table class="list" id="simple">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Apellido</th>
+				<th>E-mail</th>
+				<th>Clave</th>
+				<th>Credencial</th>
+				<th>Lista</th>
+				<th>Programa</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+			</tr>
+			<tr v-for="user in usuarios">
+				<td>{{user.id}}</td>
+				<td>{{user.nombre}}</td>
+				<td>{{user.apellido}}</td>
+				<td>{{user.correo}}</td>
+				<td>{{user.clave}}</td>
+				<td>{{user.credencial}}</td>
+				<td>{{user.idlista}}</td>
+				<td>{{user.idprograma}}</td>
+
+				<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
+				<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
+			</tr>
+		</table>
+		<div class="fix"></div>
+		<!--Agregar un nuevo usuario-------------------------------------------------------------------------------->
+		<div class="modal col-md-6" id="addmodal" v-if="showingModal">
+			<div class="modalheading">
+				<p class="left">Agregar nuevo usuario</p>
+				<p class="right close" @click="showingModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Código</th>
+							<th>:</th>
+							<td><input type="number" placeholder="id" v-model="newUser.id"></td>
+						</tr>
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Nombre" v-model="newUser.nombre"></td>
+						</tr>
+
+						<tr>
+							<th>Apellido</th>
+							<th>:</th>
+							<td><input type="text" placeholder="apellido" v-model="newUser.apellido"></td>
+						</tr>
+						<tr>
+							<th>Correo</th>
+							<th>:</th>
+							<td><input type="email" placeholder="correo" v-model="newUser.correo"></td>
+						</tr>
+						<tr>
+							<th>Clave</th>
+							<th>:</th>
+							<td><input type="text" placeholder="clave" v-model="newUser.clave"></td>
+						</tr>
+						<tr>
+							<th>Credencial</th>
+							<th>:</th>
+							<td><input type="text" placeholder="credencial" v-model="newUser.credencial"></td>
+						</tr>
+						<tr>
+							<th>Lista</th>
+							<th>:</th>
+							<td><input type="text" placeholder="lista" v-model="newUser.idlista"></td>
+						</tr>
+						<tr>
+							<th>Programa</th>
+							<th>:</th>
+							<td><input type="text" placeholder="programa" v-model="newUser.idprograma"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingModal = false; saveUser();">ACEPTAR</button>
+					<div class="margin"></div>
 				</div>
 			</div>
-  </div>
+		</div>
+		<!--Agregar un nuevo rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="addrolmodal" v-if="showingRolModal">
+			<div class="modalheading">
+				<p class="left">Agregar nuevo rol</p>
+				<p class="right close" @click="showingRolModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Código</th>
+							<th>:</th>
+							<td><input type="number" placeholder="id" v-model="newRol.id"></td>
+						</tr>
+
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Nombre" v-model="newRol.nombre"></td>
+						</tr>
+
+						<tr>
+							<th>Descripción</th>
+							<th>:</th>
+							<td><input type="text" placeholder="descripcion" v-model="newRol.descripcion"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingRolModal = false; saveRol();">ACEPTAR</button>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<div class="modal col-md-6" id="addprogramamodal" v-if="showingProgramaModal">
+			<div class="modalheading">
+				<p class="left">Agregar nuevo programa</p>
+				<p class="right close" @click="showingProgramaModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+							<tr>
+									<th>Nombre</th>
+									<th>:</th>
+									<td><input type="text" placeholder="nombre" v-model="newPrograma.nombre"></td>
+								</tr>
+								<tr>
+									<th>facultad</th>
+									<th>:</th>
+									<td><input type="text" placeholder="facultad" v-model="newPrograma.facultad"></td>
+								</tr>
+								<tr>
+									<th>Snies</th>
+									<th>:</th>
+									<td><input type="text" placeholder="snies" v-model="newPrograma.snies"></td>
+								</tr>
+								<tr>
+									<th>Duracion</th>
+									<th>:</th>
+									<td><input type="number" placeholder="duracion" v-model="newPrograma.duracion"></td>
+								</tr>
+								<tr>
+									<th>Modalidad</th>
+									<th>:</th>
+									<td><input type="text" placeholder="modalidad" v-model="newPrograma.modalidad"></td>
+								</tr>
+								<tr>
+									<th>Reacreditacion</th>
+									<th>:</th>
+									<td><input type="text" placeholder="reacreditacion"
+											v-model="newPrograma.reacreditacion"></td>
+								</tr>
+								<tr>
+									<th>Icfes</th>
+									<th>:</th>
+									<td><input type="text" placeholder="Icfes" v-model="newPrograma.icfes"></td>
+								</tr>
+								<tr>
+									<th>Renovacion</th>
+									<th>:</th>
+									<td><input type="text" placeholder="Renovacion" v-model="newPrograma.renovacion"></td>
+								</tr>
+								<tr>
+									<th>Tipo</th>
+									<th>:</th>
+									<td><input type="text" placeholder="Tipo" v-model="newPrograma.tipo"></td>
+								</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingProgramaModal = false; savePrograma();">ACEPTAR</button>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Editar un usuario------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
+			<div class="modalheading">
+				<p class="left">Editar usuario</p>
+				<p class="right close" @click="showingeditModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="nombre" v-model="clickedUser.nombre"></td>
+						</tr>
+						<tr>
+							<th>Apellido</th>
+							<th>:</th>
+							<td><input type="text" placeholder="apellido" v-model="clickedUser.apellido"></td>
+						</tr>
+						<tr>
+							<th>Correo</th>
+							<th>:</th>
+							<td><input type="email" placeholder="correo" v-model="clickedUser.correo"></td>
+						</tr>
+						<tr>
+							<th>Clave</th>
+							<th>:</th>
+							<td><input type="text" placeholder="clave" v-model="clickedUser.clave"></td>
+						</tr>
+						<tr>
+							<th>Credencial</th>
+							<th>:</th>
+							<td><input type="text" placeholder="credencial" v-model="clickedUser.credencial"></td>
+						</tr>
+						<tr>
+							<th>Lista</th>
+							<th>:</th>
+							<td><input type="text" placeholder="lista" v-model="clickedUser.idlista"></td>
+						</tr>
+						<tr>
+							<th>Programa</th>
+							<th>:</th>
+							<td><input type="text" placeholder="programa" v-model="clickedUser.idprograma"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingeditModal = false; updateUser()">ACEPTAR</button>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Editar un Rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editRolmodal" v-if="showingRoleditModal">
+			<div class="modalheading">
+				<p class="left">Editar rol</p>
+				<p class="right close" @click="showingRoleditModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="nombre" v-model="clickedRol.nombre"></td>
+						</tr>
+						<tr>
+							<th>Descripción</th>
+							<th>:</th>
+							<td><input type="text" placeholder="descripcion" v-model="clickedRol.descripcion"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingRoleditModal = false; updateRol()">ACEPTAR</button>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Editar un programa------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editProgramamodal" v-if="showingProgramaeditModal">
+			<div class="modalheading">
+				<p class="left">Editar </p>
+				<p class="right close" @click="showingProgramaeditModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="nombre" v-model="clickedPrograma.nombre"></td>
+						</tr>
+						<tr>
+							<th>facultad</th>
+							<th>:</th>
+							<td><input type="text" placeholder="facultad" v-model="clickedPrograma.facultad"></td>
+						</tr>
+						<tr>
+							<th>Snies</th>
+							<th>:</th>
+							<td><input type="text" placeholder="snies" v-model="clickedPrograma.snies"></td>
+						</tr>
+						<tr>
+							<th>Duracion</th>
+							<th>:</th>
+							<td><input type="number" placeholder="duracion" v-model="clickedPrograma.duracion"></td>
+						</tr>
+						<tr>
+							<th>Modalidad</th>
+							<th>:</th>
+							<td><input type="text" placeholder="modalidad" v-model="clickedPrograma.modalidad"></td>
+						</tr>
+						<tr>
+							<th>Reacreditacion</th>
+							<th>:</th>
+							<td><input type="text" placeholder="reacreditacion"
+									v-model="clickedPrograma.reacreditacion"></td>
+						</tr>
+						<tr>
+							<th>Icfes</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Icfes" v-model="clickedPrograma.icfes"></td>
+						</tr>
+						<tr>
+							<th>Renovacion</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Renovacion" v-model="clickedPrograma.renovacion"></td>
+						</tr>
+						<tr>
+							<th>Tipo</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Tipo" v-model="clickedPrograma.tipo"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingProgramaeditModal = false;updatePrograma() ">ACEPTAR</button>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Eliminar un usuario------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deletemodal" v-if="showingdeleteModal">
+			<div class="modalheading">
+				<p class="left">Eliminar usuario</p>
+				<p class="right close" @click="showingdeleteModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+
+					<div class="margin"></div>
+					<h3 class="center">¿Desea cambiar a inactivo?</h3>
+					<div class="margin"></div>
+					<h4 class="center">{{clickedUser.username}}</h4>
+					<div class="margin"></div>
+					<div class="col-md-6 center">
+						<button class="left" @click="showingdeleteModal = false; deleteUser()">SI</button>
+						<button class="right" @click="showingdeleteModal = false;">NO</button>
+					</div>
+					<br><br>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Eliminar un Rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deleteRolmodal" v-if="showingRoldeleteModal">
+			<div class="modalheading">
+				<p class="left">Eliminar Rol</p>
+				<p class="right close" @click="showingRoldeleteModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+
+					<div class="margin"></div>
+					<h3 class="center">¿Está seguro que desea eliminar este rol?,
+						Este rol se eliminará de todos los usuarios que lo contengan</h3>
+					<div class="margin"></div>
+					<h4 class="center">{{clickedRol.nombre}}</h4>
+					<div class="margin"></div>
+					<div class="col-md-6 center">
+						<button class="left" @click="showingRoldeleteModal = false; deleteRol()">SI</button>
+						<button class="right" @click="showingRoldeleteModal = false;">NO</button>
+					</div>
+					<br><br>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+		<!--Eliminar un programa------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deleteProgramamodal" v-if="showingProgramadeleteModal">
+			<div class="modalheading">
+				<p class="left">Eliminar Rol</p>
+				<p class="right close" @click="showingProgramadeleteModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+
+					<div class="margin"></div>
+					<h3 class="center">¿Está seguro que desea eliminar este programa?,
+						Este programa se eliminará con todos los usuarios que lo contengan</h3>
+					<div class="margin"></div>
+					<h4 class="center">{{clickedPrograma.nombre}}</h4>
+					<div class="margin"></div>
+					<div class="col-md-6 center">
+						<button class="left" @click="showingProgramadeleteModal = false; deletePrograma()">SI</button>
+						<button class="right" @click="showingProgramadeleteModal = false;">NO</button>
+					</div>
+					<br><br>
+					<div class="margin"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+  
+
 </template>
 
 <script>
@@ -102,18 +520,45 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      usuarios: [],
-      idusuario:"",
-      favoritos: [],
+      //Declaramos todas las variables que se van a utilizar
+		showingModal: false,
+		showingRolModal: false,
+		showingProgramaModal: false,
 
-      id: "",
-      clickedUser: {},
-      showingModal: false
+		showingeditModal: false,
+		showingRoleditModal: false,
+		showingProgramaeditModal: false,
+
+		showingdeleteModal: false,
+		showingRoldeleteModal: false,
+		showingProgramadeleteModal: false,
+
+		errorUserMessage: "",
+		successUserMessage: "",
+		errorRolMessage: "",
+		successRolMessage: "",
+		errorProgramaMessage: "",
+		successProgramaMessage: "",
+
+		usuarios: [],
+		newUser: { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" },
+		clickedUser: {},
+		id: "",
+		facultad: "",
+		programa: "",
+
+		roles: [],
+		newRol: { id: "", nombre: "", descripcion: "" },
+		clickedRol: {},
+
+		programas: [],
+		newPrograma: { id: "", nombre: "", facultad: "",snies:"",duracion:"",modalidad:"",reacreditacion:"",icfes:"",renovacion:"",tipo:"" },
+		clickedPrograma: {},
     };
   },
   mounted() {
-    this.getAllu();
-    //this.cargarFavorito()
+  this.getAllU();
+		this.getAllRoles();    //this.cargarFavorito()
   },
   computed: {
     ...mapState({
@@ -129,210 +574,360 @@ export default {
       getAllUsers: "getAll",
       deleteUser: "delete"
     }),
-    username(username){
+   //Trae todos los usuarios de la base de datos
+		getAllU: function () {
       var that = this;
-      that.idusuario=username
-    },
-    getAllu: function() {
-      var that = this;
-      var requestListado = new XMLHttpRequest();
-      var request = new XMLHttpRequest();
-    var  auxiliar = [];
-          
-      // Abre una nueva conexion, usando el req GET para traer la lista de las divisas
-      var string, string2;
-
-      requestListado.open(
-        "GET",
-        "https://forex.1forge.com/1.0.3/symbols?api_key=CN2qvr0mUhY8UHPwK505ij5Q82Ig2zSB",
-        true
-      );
-      requestListado.onload = function() {
-        string = requestListado.responseText;
-        string = string
-          .replace(/['"]+/g, "")
-          .replace("[", "")
-          .replace("]", "");
-      };
-      requestListado.send();
-      request.open(
-        "GET",
-        "https://forex.1forge.com/1.0.3/quotes?pairs=" +
-          string +
-          "&api_key=CN2qvr0mUhY8UHPwK505ij5Q82Ig2zSB",
-        true
-      );
-    
-      request.onload=function(){
-           
-          var json = JSON.parse(request.responseText);
-          // console.log("apunto")
-          for(var i = 0; i<100;i++){
-            auxiliar[i]= { "symbol": json[i].symbol, "price": json[i].price,"bid":json[i].bid, "ask": json[i].ask}
-             //console.log("auxili")
-            //console.log(auxiliar)
-            }
-          //  console.log(auxiliar)
-            that.usuarios = auxiliar;
-            for(var i = 0; i<100;i++){
-            axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createdivisa", {
-                params:{
-                    symbol: that.usuarios[i].symbol,
-                    ask: that.usuarios[i].ask,
-                    bid: that.usuarios[i].bid,
-                    price:that.usuarios[i].price
-
-                }
-            })
+			axios.get("http://localhost/Software/api.php?action=readusers")
 				.then(function (response) {
-				//	console.log(response);
-					//console.log(app.newUser)
+					console.log(response.data)
 					if (response.data.error) {
-                        console.log("error: " +response.data.error)
-                       
+						that.errorUserMessage = response.data.message;
+						console.log(that.users)
 					} else {
-						//console.log("entró melo")
-						
+						that.usuarios = response.data.users;
+						console.log(that.usuarios)
+					}
+					//
+
+
+				});
+		},
+		getOneUser: function () {
+			var formData = app.toFormData(app.clickedUser);
+			//console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/Software/api.php?action=search", {
+				params: {
+					id: app.id
+				}
+			})
+				.then(function (response) {
+					console.log(response.data)
+					app.id = ""
+					if (response.data.error) {
+						app.errorMessage = response.data.message;
+						//console.log("error")
+					} else {
+						app.usuarios = response.data.users;
+						//console.log("Entro")
 					}
 				});
-      }
-      };
-         
-      request.send();
-    //console.log(auxiliar.length)
-    },
-    favorite(usera, first){
-        console.log(first)
-        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createfav", {
-                params:{
-                    user_id:first,
-                    symbol: usera
 
-                }
-            })
+
+		},
+		getProgramasFacultad: function () {
+			//var formData = app.toFormData(app.clickedUser);
+			//console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/Software/api.php?action=getProgramasFacultad", {
+				params: {
+					facultad: app.facultad
+				}
+			})
 				.then(function (response) {
-				//	console.log(response);
-					//console.log(app.newUser)
+					//console.log(response.data)
+					app.facultad = ""
 					if (response.data.error) {
-                        //console.log("Error metiendo fav")
-                        alert("Ya ha sido registrado como favorito")
-                       
+						app.errorMessage = response.data.message;
+						//console.log("error")
 					} else {
-                        //console.log("fav entró melo")
-                        alert("Agregado a favoritos");
-                        
-						
+						app.programas = response.data.users;
+						console.log("getProgramasFacultad: ")
+						console.log( response.data.users)
 					}
 				});
-    },
-    deletefav(usera, first){
-        	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deletefav", {
-                params:{
-                    user_id:first,
-                    symbol: usera
 
-                }
-            })
+
+		},
+		getFacultad: function () {
+			var formData = app.toFormData(app.clickedUser);
+			//console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/Software/api.php?action=getFacultad", {
+				params: {
+					facultad: app.facultad
+				}
+			})
 				.then(function (response) {
-				//	console.log(response);
-					//console.log(app.newUser)
+					console.log(response.data)
+					app.facultad = ""
 					if (response.data.error) {
-                        //console.log("Error metiendo fav")
-                        alert("Error al eliminar")
-                       
+						app.errorMessage = response.data.message;
+						//console.log("error")
 					} else {
-                        //console.log("fav entró melo")
-                        alert("Eliminado correctamente");
-                        
-						
+						app.usuarios = response.data.users;
+						//console.log("Entro")
 					}
 				});
-    },
-        deleteus(username){
-          	axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deleteuser", {
-                params:{
-                    id:username
-                }
-            })
+
+
+		},
+		getPrograma: function () {
+			var formData = app.toFormData(app.clickedUser);
+			//console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/Software/api.php?action=getPrograma", {
+				params: {
+					programa: app.programa
+				}
+			})
+				.then(function (response) {
+					console.log(response.data)
+					app.programa = ""
+					if (response.data.error) {
+						app.errorMessage = response.data.message;
+						//console.log("error")
+					} else {
+						app.usuarios = response.data.users;
+						//console.log("Entro")
+					}
+				});
+
+
+		},
+		//Trae todos los roles de la base de datos
+		getAllRoles: function () {
+            var that = this;
+
+			axios.get("http://localhost/Software/api.php?action=readrol")
+				.then(function (response) {
+					console.log(response.data)
+					if (response.data.error) {
+						that.errorRolMessage = response.data.message;
+						console.log(that.roles)
+					} else {
+						that.roles = response.data.rol;
+						console.log(response.data.rol)
+					}
+					//
+					console.log(that.roles)
+
+				});
+
+		},
+		//Crea un nuevo usuario en la tabla usuarios
+		saveUser: function () {
+            var that = this;     
+			var formData = that.toFormData(that.newUser);
+			axios.post("http://localhost/Software/api.php?action=createuser", formData)
 				.then(function (response) {
 					console.log(response);
-					//console.log(app.newUser)
+					that.newUser = { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" };
+					console.log(that.newUser)
 					if (response.data.error) {
-                        //console.log("Error metiendo fav")
-                        alert("Error al eliminar")
-                       
+						that.errorUserMessage = response.data.message;
+						//console.log(response.data.message)
 					} else {
-                        //console.log("fav dentro melo")
-                        alert("Eliminado correctamente");
-                         location.href = "/login"			
-          
-          }
-				});
-
-    }
-    ,cargarFavorito(id){
-        //console.log(id)
-        var that = this;
-        var requestListado = new XMLHttpRequest();
-        var request = new XMLHttpRequest();
-      var  auxiliar = [];
-          
-      
-      var string;
-
-      requestListado.open(
-        "GET",
-        "http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getfav&user_id=" + id,
-        true
-      );
-      requestListado.onload = function() {
-         var json = JSON.parse(requestListado.responseText);
-         json = json.users
-  
-          for(var i = 0; i<json.length; i++){
-            auxiliar[i]= { "symbol": json[i].symbol_id, "price": json[i].price,"bid":json[i].bid, "ask": json[i].ask} 
- 
-          }
-          that.favoritos=auxiliar;
-      };
-      requestListado.send();
-    },
-    //Actualiza un usuario dependiendo del id de este
-		updateUser() {
-       var that = this;
-      //var that = this;
-      
-   
-
-      axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", {
-                params:{
-                    id:that.idusuario,
-                    nombre:that.clickedUser.nombre,
-                    apellido:that.clickedUser.apellido,
-                    clave: that.clickedUser.clave
-                }
-
-                })
-				.then(function (response) {
-					//console.log(response);
-					that.clickedUser = {};
-					if (response.data.error) {
-            that.errorUserMessage = response.data.message;
-            alert("error al actualizar")
-					} else {
-            that.successUserMessage = response.data.message;
-            alert("Actualizado correctamente en la BD")
+						console.log("entro melo")
+						that.successUserMessage = response.data.message;
+						that.getAllUsers();
 					}
 				});
 		},
-    
+		//Crea un nuevo rol en la tabla roles
+		saveRol: function () {
+          var that = this;     
+			var formData = that.toFormData(that.newRol);
+			axios.post("http://localhost/Software/api.php?action=createrol", formData)
+				.then(function (response) {
+					console.log(response);
+					that.newRol = { id: "", nombre: "", descripcion: "" };
+					console.log(that.newRol)
+					if (response.data.error) {
+						that.errorRolMessage = response.data.message;
+						//console.log(response.data.message)
+					} else {
+						console.log("entro melo")
+						that.successRolMessage = response.data.message;
+						that.getAllRoles();
+					}
+				});
+		},
+		//Crea un nuevo rol en la tabla roles
+		savePrograma: function () {
+      var that = this;    
+			var formData = that.toFormData(that.newPrograma);
+			axios.post("http://localhost/Software/api.php?action=saveProgramaFacultad", formData)
+				.then(function (response) {
+					console.log(response);
+					that.newRol = { id: "", nombre: "", descripcion: "" };
+					console.log(that.newRol)
+					if (response.data.error) {
+						that.errorprogramaMessage = response.data.message;
+						//console.log(response.data.message)
+					} else {
+						console.log("entro melo")
+						that.successProgramaMessage = response.data.message;
+						that.getAllRoles();
+					}
+				});
+		},
+		//Actualiza un usuario dependiendo del id de este
+		updateUser: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedUser);
+			axios.post("http://localhost/Software/api.php?action=updateuser", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedUser = {};
+					if (response.data.error) {
+						that.errorUserMessage = response.data.message;
+					} else {
+						that.successUserMessage = response.data.message;
+						that.getAllUsers();
+					}
+				});
+		},
+		//Actualiza un rol dependiendo del id de este
+		updatePrograma: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedPrograma);
+			axios.post("http://localhost/Software/api.php?action=updateProgramasFacultad", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedPrograma = {};
+					if (response.data.error) {
+						that.errorProgramaMessage = response.data.message;
+					} else {
+						that.successProgramaMessage = response.data.message;
+					}
+				});
+		},
+		//Actualiza un programa dependiendo del id de este
+		updateRol: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedRol);
+			axios.post("http://localhost/Software/api.php?action=updaterol", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedRol = {};
+					if (response.data.error) {
+						that.errorRolMessage = response.data.message;
+					} else {
+						that.successRolMessage = response.data.message;
+						that.getAllRoles();
+					}
+				});
+		},
+		//Elimina un usuario dependiendo del id de este
+		deleteUser: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedUser);
+			axios.post("http://localhost/Software/api.php?action=deleteuser", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedUser = {};
+					if (response.data.error) {
+						that.errorUserMessage = response.data.message;
+					} else {
+						that.successUserMessage = response.data.message;
+						that.getAllUsers();
+					}
+				});
+		},
+		//Elimina un programa dependiendo del id de este
+		deletePrograma: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedPrograma);
+			axios.post("http://localhost/Software/api.php?action=deletePrograma", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedPrograma = {};
+					if (response.data.error) {
+						that.errorUserMessage = response.data.message;
+					} else {
+						that.successProgramaMessage = response.data.message;
 
-  }
+					}
+				});
+		},
+		//Elimina un Rol dependiendo del id de este
+		deleteRol: function () {
+      var that = this;
+			var formData = that.toFormData(that.clickedRol);
+			axios.post("http://localhost/Software/api.php?action=deleterol", formData)
+				.then(function (response) {
+					console.log(response);
+					that.clickedRol = {};
+					if (response.data.error) {
+						that.errorRolMessage = response.data.message;
+					} else {
+						that.successRolMessage = response.data.message;
+						that.getAllRoles();
+					}
+				});
+		},
+		//Establece el usuario seleccionado
+		selectUser(user) {
+      var that = this;
+			that.clickedUser = user;
+		},
+		//Establece el rol seleccionado
+		selectRol(rol) {
+      var that = this;
+      that.clickedRol = rol;
+		},
+		selectPrograma(programa) {
+      var that = this;
+      that.clickedPrograma = programa;
+		},
+		//Traduce los datos a la tabla
+		toFormData: function (obj) {
+			var form_data = new FormData();
+			for (var key in obj) {
+				form_data.append(key, obj[key]);
+			}
+			return form_data;
+		},
+		//Limpia los mensajes de las notificaciones
+		clearMessage: function () {
+			that.errorUserMessage = "";
+			that.successUserMessage = "";
+			that.errorRolMessage = "";
+			that.successRolMessage = "";
+			that.errorProgramaMessage = "";
+			that.successProgramaMessage = "";
+		},
+	}
 };
 </script>
 
 <!--Hoja de estilos-->
 <style>
+*{
+	margin: 0;
+	padding: 0;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #e0e0e0;
+}
+.left{
+	float: left;
+	display: block;
+	overflow: hidden;
+}
+.right{
+	float: right;
+	margin-left: 10px;
+}
+.fix{
+	overflow: hidden;
+	clear: both;
+}
+h1{
+	font-size: 25px;
+
+}
+
+div#root {
+    margin-top: 50px;
+    background: #f3f3f3;
+    padding: 50px;
+}
 button {
   padding: 0 15px;
   border: 0;

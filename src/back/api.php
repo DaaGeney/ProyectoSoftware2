@@ -1,23 +1,124 @@
-
 <?php 
-
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-//123!\"·QWE
-$conn = new mysqli("localhost", "root", "", "web");
+
+$conn = new mysqli("localhost", "root", "", "software2");
 if ($conn->connect_error) {
 	die("Database connection established Failed..");
 } 
 $res = array('error' => false);
+
+
+
 $action = 'readusers';
+$action = 'readrol';
 
 if (isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
-//Lee usuarios de la base de datos desde la api
+
+if($action=='search'){
+	$id = $_GET['id'];
+$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+
+if($action=='getProgramasFacultad'){
+	$facultad = $_GET['facultad'];
+$result = $conn->query("SELECT `programa`.`id` as id,
+`programa`.`nombre` as nombre,
+`facultad`.`nombre` as facultad, `programa`.`codigoSnies` as snies, `programa`.`duracion` as duracion,  
+`programa`.`modalidad` as modalidad, `programa`.`reacrediracion` as reacreditacion, `programa`.`registroIcfes` as icfes,`programa`.`renovacionRegistro` as renovacion, 
+`programa`.`tipo` as tipo 
+FROM `programa`,`facultad` WHERE `programa`.`idFacultad`= `facultad`.`idFacultad` and `facultad`.`nombre`='$facultad'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+if($action=='saveProgramaFacultad'){
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$facultad = $_POST['facultad'];
+	$snies = $_POST['snies'];
+	$duracion = $_POST['duracion'];
+	$modalidad = $_POST['modalidad'];
+	$reacreditacion = $_POST['reacreditacion'];
+	$icfes = $_POST['icfes'];
+	$renovacion = $_POST['renovacion'];
+	$tipo = $_POST['tipo'];
+
+$result = $conn->query("  insert into `programa` (`id`,`codigoSnies`,`duracion`,`idFacultad`,`modalidad`,`nombre`,`reacrediracion`,`registroIcfes`,`renovacionRegistro`,`tipo` )  value ('$id','$snies','$duracion',(select `idFacultad` from `facultad` where `nombre` ='$facultad'),'$modalidad','$nombre','$reacreditacion','$icfes','$renovacion','$tipo')");
+	if ($result) {
+		$res['message'] = "Programa actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el programa";
+	}
+}
+
+if($action=='updateProgramasFacultad'){
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$facultad = $_POST['facultad'];
+	$snies = $_POST['snies'];
+	$duracion = $_POST['duracion'];
+	$modalidad = $_POST['modalidad'];
+	$reacreditacion = $_POST['reacreditacion'];
+	$icfes = $_POST['icfes'];
+	$renovacion = $_POST['renovacion'];
+	$tipo = $_POST['tipo'];
+
+$result = $conn->query("UPDATE `programa` SET `codigoSnies` = '$snies',`duracion`='$duracion' ,
+`idFacultad` = (select `idFacultad` from `facultad` where `nombre` = '$facultad'),
+`modalidad`='$modalidad', `nombre` = '$nombre',
+`reacrediracion` = '$reacreditacion', `registroIcfes`= '$icfes' , `renovacionRegistro` = '$renovacion', `tipo` = '$tipo'
+  WHERE `id` = '$id'");
+	if ($result) {
+		$res['message'] = "Programa actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el programa";
+	}
+}
+
+if($action=='getFacultad'){
+	$facultad = $_GET['facultad'];
+$result = $conn->query("SELECT * FROM `usuarios` where `idPrograma`=any(select `id` from `programa` where `idFacultad` = any(select  `idFacultad` from `facultad` where `nombre` = '$facultad')  )  and `estado`='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+if($action=='getPrograma'){
+	$programa = $_GET['programa'];
+$result = $conn->query("SELECT * FROM `usuarios` where `idPrograma`=any(select `id` from `programa` where `nombre` = '$programa' )  and `estado`='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+
+
 if ($action == 'readusers') {
-	$result = $conn->query("SELECT * from usuarios");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('999','Administrador del Sistema', 'Administrador del Sistema')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('998','Personal Administrativo', 'Personal Administrativo')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('997','Decano', 'Decano')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('996','Jefe de Programa', 'Jefe de Programa')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('995','Coordinador de Posgrado', 'Coordinador de Posgrado')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('994',', Coordinador de UOC', ', Coordinador de UOC')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('993','Docente', 'Docente')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('992','Alumno ', 'Alumno ')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('991','Monitor', 'Monitor')");
+	$result = $conn->query("SELECT usuarios.id as id, usuarios.nombre as nombre,usuarios.apellido as apellido, usuarios.correo as correo,usuarios.clave as clave,usuarios.credencial as credencial, lista.nombre as idlista,programa.nombre as idprograma from usuarios,lista,programa where usuarios.codigoLista=lista.id and usuarios.idprograma=programa.id and usuarios.estado='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
@@ -26,16 +127,69 @@ if ($action == 'readusers') {
 	
 }
 
-
-//Actualiza un usuario en la base de datos
-if ($action == 'updateuser') {
-	$id = $_GET['id'];
+if ($action == 'readrol') {
+	$result = $conn->query("SELECT * FROM `rol`");
+	$rol = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($rol, $row);
+	}
+	$res['rol'] = $rol;
 	
-	$nombre = $_GET['nombre'];
-	$apellido = $_GET['apellido'];
-	$clave = $_GET['clave'];
+}
+
+if ($action == 'createuser') {
+
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$apellido = $_POST['apellido'];
+	$correo = $_POST['correo'];
+	$clave = $_POST['clave'];
+	$credencial = $_POST['credencial'];
+	$idlista = $_POST['idlista'];
+	$idprograma = $_POST['idprograma'];
+
+
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`codigoLista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'), 'activo') ");
+	if ($result) {
+		$res['message'] = "Usuario creado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido crear el usuario";
+	}
+}
+
+if ($action == 'createrol') {
+
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$descripcion = $_POST['descripcion'];
+
+
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) VALUES ('$id', '$nombre', '$descripcion')");
+	if ($result) {
+		$res['message'] = "Rol creado correctamente";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido crear el rol";
+	}
+}
+
+if ($action == 'updateuser') {
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$apellido = $_POST['apellido'];
+	$correo = $_POST['correo'];
+	$clave = $_POST['clave'];
+	$credencial = $_POST['credencial'];
+	$idlista = $_POST['idlista'];
+	$idprograma = $_POST['idprograma'];
+
+
 	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
-	 clave = '$clave' where id='$id'");
+	correo='$correo', credencial = '$credencial',
+	codigoLista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
+	 estado = 'activo'
+	  WHERE id = '$id'");
 	if ($result) {
 		$res['message'] = "Usuario actualizado correctamente!";
 	} else{
@@ -44,114 +198,51 @@ if ($action == 'updateuser') {
 	}
 }
 
-if ($action == 'createuser') {
-	$id =$_GET['id'];
-	$nombre = $_GET['nombre'];
-	$apellido = $_GET['apellido'];
-	$clave = $_GET['clave'];
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`clave`) VALUES ('$id','$nombre', '$apellido','$clave') ");
+if ($action == 'updaterol') {
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$descripcion = $_POST['descripcion'];
+
+
+	$result = $conn->query("UPDATE `rol` SET `nombre` = '$nombre',`descripcion`='$descripcion' WHERE `id` = '$id'");
 	if ($result) {
-		$res['message'] = "Usuario creado correctamente";
+		$res['message'] = "Rol actualizado correctamente!";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "Error al registrar" ;
+		$res['message'] = "No se ha podido actualizar el rol";
 	}
 }
-// Crea un usuario en la base de datos por medio de la api
-if ($action == 'createuser') {
-	$id =$_GET['id'];
-	$nombre = $_GET['nombre'];
-	$apellido = $_GET['apellido'];
-	$clave = $_GET['clave'];
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`clave`) VALUES ('$id','$nombre', '$apellido','$clave') ");
-	if ($result) {
-		$res['message'] = "Usuario creado correctamente";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al registrar" ;
-	}
-}
-
-//Elimina un usuario
-if ($action == 'deleteuser') {
-	$id =$_GET['id'];
-
-	$result = $conn->query("DELETE  from  `usuarios` where `id` ='$id'  ");
-	if ($result) {
-		$res[$result];
-		$res['message'] = "Usuario eliminado correctamente";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al eliminar" ;
-	}
-}
-
-//Crea un nuevo favorito
-if ($action == 'createfav') {
-	$user_id =$_GET['user_id'];
-	$symbol = $_GET['symbol'];
-
-	$result = $conn->query("INSERT INTO `favoritos` (`symbol_id`, `user_id`) VALUES ('$symbol','$user_id') ");
-	if ($result) {
-		$res['message'] = "Favorito agregado";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al registrar" ;
-	}
-}
-
-//Elimina una divisa favorita
-if ($action == 'deletefav') {
-	$user_id =$_GET['user_id'];
-	$symbol = $_GET['symbol'];
-
-	$result = $conn->query("DELETE from  `favoritos` where `symbol_id` = '$symbol' and `user_id` ='$user_id' ");
-	if ($result) {
-		$res['message'] = "Favorito eliminado correctamente";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al eliminar" ;
-	}
-}
-
-if ($action == 'getfav') {
-	$user_id =$_GET['user_id'];
-
-
-	$result = $conn->query("SELECT `favoritos`.`symbol_id`,`roles`.`price`, `roles`.`bid`,`roles`.`ask` from `favoritos`,`roles` where `favoritos`.`symbol_id`=`roles`.`symbol` and `favoritos`.`user_id`='$user_id'");
-	$users = array();
-	while ($row = $result->fetch_assoc()){
-		array_push($users, $row);
-	}
-	$res['users'] = $users;
-}
-
-//Crea una divisa
-if ($action == 'createdivisa') {
-	$symbol =$_GET['symbol'];
-	$price = $_GET['price'];
-	$bid = $_GET['bid'];
-	$ask = $_GET['ask'];
-	$result = $conn->query("DELETE FROM `roles` WHERE `roles`.`symbol` = '$symbol'");
-	$result = $conn->query("INSERT INTO `roles` (`symbol`, `price`, `bid`,`ask`) VALUES ('$symbol','$price', '$bid','$ask') ");
-	if ($result) {
-		$res['message'] = "Divisa creada";
-	} else{
-		$res['error'] = true;
-		$res['message'] = "Error al crear la divisa" ;
-	}
-}
-
-
 
 if ($action == 'deleteuser') {
 	$id = $_POST['id'];
 	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	
 	if ($result) {
-		$res['message'] = "Usuario ha sido eliminado";
+		$res['message'] = "Usuario ha pasado a inactivo";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "No se ha podido eliminar el usuario";
+		$res['message'] = "No se ha podido cambiar el estado del usuario";
+	}
+}
+
+if ($action == 'deletePrograma') {
+	$id = $_POST['id'];
+	$result = $conn->query("DELETE FROM `programa` WHERE `id` = '$id'");	
+	if ($result) {
+		$res['message'] = "Programa eliminado";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido eliminar";
+	}
+}
+
+if ($action == 'deleterol') {
+	$id = $_POST['id'];
+	$result = $conn->query("DELETE FROM `rol` WHERE `id` = '$id'");	
+	if ($result) {
+		$res['message'] = "Rol eliminado!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido eliminar el Rol";
 	}
 }
 
@@ -159,4 +250,5 @@ $conn -> close();
 header("Content-type: application/json");
 echo json_encode($res);
 die();
+
  ?>
