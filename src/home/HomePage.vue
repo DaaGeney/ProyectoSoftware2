@@ -18,7 +18,7 @@
 			<div>
 				<input type="text" v-model="id">
 				<button @click="getOneUser()">Busqueda</button>
-				<button @click="getAllUsers()">Traer todo</button>
+				<button @click="getAllU()">Traer todo</button>
 			</div>
 			<div>
 				<input type="text" v-model="facultad">
@@ -26,7 +26,7 @@
 			</div>
 			<div>
 				<input type="text" v-model="programa">
-				<button @click="getPrograma()">Filtro Pograma</button>
+				<button @click="getPrograma()">Filtro Programa</button>
 			</div>
 
 			<h1 class="left">OCMS Gestion de usuarios y roles</h1>
@@ -238,6 +238,11 @@
 			<div class="modalbody">
 				<div class="modalcontent">
 					<table class="form">
+						<tr>
+									<th>ID</th>
+									<th>:</th>
+									<td><input type="number" placeholder="id" v-model="newPrograma.id"></td>
+								</tr>
 							<tr>
 									<th>Nombre</th>
 									<th>:</th>
@@ -593,21 +598,23 @@ export default {
 				});
 		},
 		getOneUser: function () {
-			var formData = app.toFormData(app.clickedUser);
+			      var that = this;
+
+			var formData = that.toFormData(that.clickedUser);
 			//console.log("Al menos entra +" + formData)
 			axios.get("http://localhost/Software/api.php?action=search", {
 				params: {
-					id: app.id
+					id: that.id
 				}
 			})
 				.then(function (response) {
 					console.log(response.data)
-					app.id = ""
+					that.id = ""
 					if (response.data.error) {
-						app.errorMessage = response.data.message;
+						that.errorMessage = response.data.message;
 						//console.log("error")
 					} else {
-						app.usuarios = response.data.users;
+						that.usuarios = response.data.users;
 						//console.log("Entro")
 					}
 				});
@@ -615,21 +622,23 @@ export default {
 
 		},
 		getProgramasFacultad: function () {
+			      var that = this;
+
 			//var formData = app.toFormData(app.clickedUser);
 			//console.log("Al menos entra +" + formData)
 			axios.get("http://localhost/Software/api.php?action=getProgramasFacultad", {
 				params: {
-					facultad: app.facultad
+					facultad: that.facultad
 				}
 			})
 				.then(function (response) {
 					//console.log(response.data)
-					app.facultad = ""
+					that.facultad = ""
 					if (response.data.error) {
-						app.errorMessage = response.data.message;
+						that.errorMessage = response.data.message;
 						//console.log("error")
 					} else {
-						app.programas = response.data.users;
+						that.programas = response.data.users;
 						console.log("getProgramasFacultad: ")
 						console.log( response.data.users)
 					}
@@ -638,21 +647,23 @@ export default {
 
 		},
 		getFacultad: function () {
-			var formData = app.toFormData(app.clickedUser);
+			      var that = this;
+
+			var formData = that.toFormData(that.clickedUser);
 			//console.log("Al menos entra +" + formData)
 			axios.get("http://localhost/Software/api.php?action=getFacultad", {
 				params: {
-					facultad: app.facultad
+					facultad: that.facultad
 				}
 			})
 				.then(function (response) {
 					console.log(response.data)
-					app.facultad = ""
+					that.facultad = ""
 					if (response.data.error) {
-						app.errorMessage = response.data.message;
+						that.errorMessage = response.data.message;
 						//console.log("error")
 					} else {
-						app.usuarios = response.data.users;
+						that.usuarios = response.data.users;
 						//console.log("Entro")
 					}
 				});
@@ -660,21 +671,23 @@ export default {
 
 		},
 		getPrograma: function () {
-			var formData = app.toFormData(app.clickedUser);
+			      var that = this;
+
+			var formData = that.toFormData(that.clickedUser);
 			//console.log("Al menos entra +" + formData)
 			axios.get("http://localhost/Software/api.php?action=getPrograma", {
 				params: {
-					programa: app.programa
+					programa: that.programa
 				}
 			})
 				.then(function (response) {
 					console.log(response.data)
-					app.programa = ""
+					that.programa = ""
 					if (response.data.error) {
-						app.errorMessage = response.data.message;
+						that.errorMessage = response.data.message;
 						//console.log("error")
 					} else {
-						app.usuarios = response.data.users;
+						that.usuarios = response.data.users;
 						//console.log("Entro")
 					}
 				});
@@ -746,10 +759,9 @@ export default {
 			axios.post("http://localhost/Software/api.php?action=saveProgramaFacultad", formData)
 				.then(function (response) {
 					console.log(response);
-					that.newRol = { id: "", nombre: "", descripcion: "" };
-					console.log(that.newRol)
+					that.newPrograma= { id: "", nombre: "", facultad: "",snies:"",duracion:"",modalidad:"",reacreditacion:"",icfes:"",renovacion:"",tipo:"" }
 					if (response.data.error) {
-						that.errorprogramaMessage = response.data.message;
+						that.errorProgramaMessage = response.data.message;
 						//console.log(response.data.message)
 					} else {
 						console.log("entro melo")
@@ -760,7 +772,9 @@ export default {
 		},
 		//Actualiza un usuario dependiendo del id de este
 		updateUser: function () {
-      var that = this;
+			var that = this;
+			console.log("editando")
+			console.log(that.clickedUser)
 			var formData = that.toFormData(that.clickedUser);
 			axios.post("http://localhost/Software/api.php?action=updateuser", formData)
 				.then(function (response) {
@@ -795,7 +809,6 @@ export default {
 			var formData = that.toFormData(that.clickedRol);
 			axios.post("http://localhost/Software/api.php?action=updaterol", formData)
 				.then(function (response) {
-					console.log(response);
 					that.clickedRol = {};
 					if (response.data.error) {
 						that.errorRolMessage = response.data.message;
@@ -811,7 +824,6 @@ export default {
 			var formData = that.toFormData(that.clickedUser);
 			axios.post("http://localhost/Software/api.php?action=deleteuser", formData)
 				.then(function (response) {
-					console.log(response);
 					that.clickedUser = {};
 					if (response.data.error) {
 						that.errorUserMessage = response.data.message;

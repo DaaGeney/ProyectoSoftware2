@@ -28,6 +28,8 @@ $result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='
 	$res['users'] = $users;
 }
 
+
+
 if($action=='getProgramasFacultad'){
 	$facultad = $_GET['facultad'];
 $result = $conn->query("SELECT `programa`.`id` as id,
@@ -56,10 +58,10 @@ if($action=='saveProgramaFacultad'){
 
 $result = $conn->query("  insert into `programa` (`id`,`codigoSnies`,`duracion`,`idFacultad`,`modalidad`,`nombre`,`reacrediracion`,`registroIcfes`,`renovacionRegistro`,`tipo` )  value ('$id','$snies','$duracion',(select `idFacultad` from `facultad` where `nombre` ='$facultad'),'$modalidad','$nombre','$reacreditacion','$icfes','$renovacion','$tipo')");
 	if ($result) {
-		$res['message'] = "Programa actualizado correctamente!";
+		$res['message'] = "Programa registrado correctamente!";
 	} else{
 		$res['error'] = true;
-		$res['message'] = "No se ha podido actualizar el programa";
+		$res['message'] = "No se ha podido registrar el programa";
 	}
 }
 
@@ -175,18 +177,18 @@ if ($action == 'createrol') {
 }
 
 if ($action == 'updateuser') {
-	$id = $_POST['id'];
-	$nombre = $_POST['nombre'];
-	$apellido = $_POST['apellido'];
-	$correo = $_POST['correo'];
-	$clave = $_POST['clave'];
-	$credencial = $_POST['credencial'];
-	$idlista = $_POST['idlista'];
-	$idprograma = $_POST['idprograma'];
+	$id = $_GET['id'];
+	$nombre = $_GET['nombre'];
+	$apellido = $_GET['apellido'];
+	$correo = $_GET['correo'];
+	$clave = $_GET['clave'];
+	$credencial = $_GET['credencial'];
+	$idlista = $_GET['idlista'];
+	$idprograma = $_GET['idprograma'];
 
 
 	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
-	correo='$correo', credencial = '$credencial',
+	correo='$correo', clave = '$clave',  credencial = '$credencial', 
 	codigoLista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
 	 estado = 'activo'
 	  WHERE id = '$id'");
