@@ -120,7 +120,34 @@ if ($action == 'readusers') {
 	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('993','Docente', 'Docente')");
 	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('992','Alumno ', 'Alumno ')");
 	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('991','Monitor', 'Monitor')");
-	$result = $conn->query("SELECT usuarios.id as id, usuarios.nombre as nombre,usuarios.apellido as apellido, usuarios.correo as correo,usuarios.clave as clave,usuarios.credencial as credencial, lista.nombre as idlista,programa.nombre as idprograma from usuarios,lista,programa where usuarios.codigoLista=lista.id and usuarios.idprograma=programa.id and usuarios.estado='activo'");
+	$result = $conn->query("SELECT usuarios.id as id, 
+	usuarios.nombre as nombre,usuarios.apellido as apellido,
+	 usuarios.correo as correo,usuarios.clave as clave,
+	 usuarios.credencial as credencial, 
+	 lista.nombre as idlista,
+	 rol.nombre as idrol,
+	 programa.nombre as idprograma
+	 from usuarios,lista,programa,rol where usuarios.codigoLista=lista.id and 
+	 usuarios.idprograma=programa.id  and usuarios.codigoRol=rol.id and usuarios.estado='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+	
+}
+
+if ($action == 'readadmin') {
+	$result = $conn->query("SELECT usuarios.id as id, 
+	usuarios.nombre as nombre,usuarios.apellido as apellido,
+	 usuarios.correo as correo,usuarios.clave as clave,
+	 usuarios.credencial as credencial, 
+	 lista.nombre as idlista,
+	 rol.nombre as idrol,
+	 programa.nombre as idprograma
+	 from usuarios,lista,programa,rol where usuarios.codigoLista=lista.id and 
+	 usuarios.idprograma=programa.id  and usuarios.codigoRol=rol.id 
+	 and usuarios.codigoRol='999' and usuarios.estado='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
@@ -149,9 +176,11 @@ if ($action == 'createuser') {
 	$credencial = $_POST['credencial'];
 	$idlista = $_POST['idlista'];
 	$idprograma = $_POST['idprograma'];
+	$idrol = $_POST['idrol'];
 
 
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`codigoLista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'), 'activo') ");
+
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`codigoLista`,`idprograma`,`codigoRol`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'),(select id from rol where nombre='$idrol'), 'activo') ");
 	if ($result) {
 		$res['message'] = "Usuario creado correctamente";
 	} else{
@@ -177,19 +206,21 @@ if ($action == 'createrol') {
 }
 
 if ($action == 'updateuser') {
-	$id = $_GET['id'];
-	$nombre = $_GET['nombre'];
-	$apellido = $_GET['apellido'];
-	$correo = $_GET['correo'];
-	$clave = $_GET['clave'];
-	$credencial = $_GET['credencial'];
-	$idlista = $_GET['idlista'];
-	$idprograma = $_GET['idprograma'];
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$apellido = $_POST['apellido'];
+	$correo = $_POST['correo'];
+	$clave = $_POST['clave'];
+	$credencial = $_POST['credencial'];
+	$idlista = $_POST['idlista'];
+	$idprograma = $_POST['idprograma'];
+	$idrol = $_POST['idrol'];
+
 
 
 	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
 	correo='$correo', clave = '$clave',  credencial = '$credencial', 
-	codigoLista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
+	codigoLista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') , codigoRol= (select id from rol where nombre =  '$idrol'),
 	 estado = 'activo'
 	  WHERE id = '$id'");
 	if ($result) {

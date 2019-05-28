@@ -14,13 +14,14 @@ export const userService = {
 };
 
 function login(username, password) {
+   localStorage.clear();
+    cargar();
 
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     };
-    cargar();
 
     return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         .then(handleResponse)
@@ -36,7 +37,7 @@ function login(username, password) {
         });
 }
 function cargar() {
-    axios.get("http://localhost/Software/api.php?action=readusers")
+    axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=readadmin")
                       .then(function (response) {
                           console.log(response.data)
                           if (response.data.error) {
@@ -55,7 +56,7 @@ function cargar() {
 }
 
 function deletec() {
-    axios.get("http://localhost/Software/api.php?action=readusers")
+    axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=readusers")
                       .then(function (response) {
                           console.log(response.data)
                           if (response.data.error) {

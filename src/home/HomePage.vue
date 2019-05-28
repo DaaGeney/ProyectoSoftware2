@@ -3,15 +3,14 @@
     
     <h1 style="display:inline">Bienvenido {{account.user.firstName}}!</h1>
     <p style="display:inline; float:right">
-      <router-link to="/login">Logout</router-link>
-      <a @click="showingModal = true;">Editar usuario</a> 
+      <router-link to="/login">Cerrar sesion</router-link>
     </p>
 
     <div id="root">
 
 		<div class="">
 			<div class="crud_header">
-				<h1 class="left">Primer Sprint</h1>
+				<h1 class="left">Segundo Sprint</h1>
 
 				<div class="fix"></div>
 			</div>
@@ -119,6 +118,7 @@
 				<th>Credencial</th>
 				<th>Lista</th>
 				<th>Programa</th>
+				<th>Rol</th>
 				<th>Editar</th>
 				<th>Eliminar</th>
 			</tr>
@@ -131,6 +131,7 @@
 				<td>{{user.credencial}}</td>
 				<td>{{user.idlista}}</td>
 				<td>{{user.idprograma}}</td>
+				<td>{{user.idrol}}</td>
 
 				<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
 				<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
@@ -187,6 +188,11 @@
 							<th>Programa</th>
 							<th>:</th>
 							<td><input type="text" placeholder="programa" v-model="newUser.idprograma"></td>
+						</tr>
+						<tr>
+							<th>Rol</th>
+							<th>:</th>
+							<td><input type="text" placeholder="rol" v-model="newUser.idrol"></td>
 						</tr>
 					</table>
 					<div class="margin"></div>
@@ -340,6 +346,11 @@
 							<th>Programa</th>
 							<th>:</th>
 							<td><input type="text" placeholder="programa" v-model="clickedUser.idprograma"></td>
+						</tr>
+						<tr>
+							<th>Rol</th>
+							<th>:</th>
+							<td><input type="text" placeholder="rol" v-model="clickedUser.idrol"></td>
 						</tr>
 					</table>
 					<div class="margin"></div>
@@ -546,7 +557,7 @@ export default {
 		successProgramaMessage: "",
 
 		usuarios: [],
-		newUser: { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" },
+		newUser: { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "", idrol: "" },
 		clickedUser: {},
 		id: "",
 		facultad: "",
@@ -563,7 +574,7 @@ export default {
   },
   mounted() {
   this.getAllU();
-		this.getAllRoles();    //this.cargarFavorito()
+	this.getAllRoles();    //this.cargarFavorito()
   },
   computed: {
     ...mapState({
@@ -582,7 +593,7 @@ export default {
    //Trae todos los usuarios de la base de datos
 		getAllU: function () {
       var that = this;
-			axios.get("http://localhost/Software/api.php?action=readusers")
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=readusers")
 				.then(function (response) {
 					console.log(response.data)
 					if (response.data.error) {
@@ -602,7 +613,7 @@ export default {
 
 			var formData = that.toFormData(that.clickedUser);
 			//console.log("Al menos entra +" + formData)
-			axios.get("http://localhost/Software/api.php?action=search", {
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=search", {
 				params: {
 					id: that.id
 				}
@@ -626,7 +637,7 @@ export default {
 
 			//var formData = app.toFormData(app.clickedUser);
 			//console.log("Al menos entra +" + formData)
-			axios.get("http://localhost/Software/api.php?action=getProgramasFacultad", {
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getProgramasFacultad", {
 				params: {
 					facultad: that.facultad
 				}
@@ -651,7 +662,7 @@ export default {
 
 			var formData = that.toFormData(that.clickedUser);
 			//console.log("Al menos entra +" + formData)
-			axios.get("http://localhost/Software/api.php?action=getFacultad", {
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getFacultad", {
 				params: {
 					facultad: that.facultad
 				}
@@ -673,9 +684,8 @@ export default {
 		getPrograma: function () {
 			      var that = this;
 
-			var formData = that.toFormData(that.clickedUser);
-			//console.log("Al menos entra +" + formData)
-			axios.get("http://localhost/Software/api.php?action=getPrograma", {
+//console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=getPrograma", {
 				params: {
 					programa: that.programa
 				}
@@ -698,7 +708,7 @@ export default {
 		getAllRoles: function () {
             var that = this;
 
-			axios.get("http://localhost/Software/api.php?action=readrol")
+			axios.get("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=readrol")
 				.then(function (response) {
 					console.log(response.data)
 					if (response.data.error) {
@@ -718,10 +728,10 @@ export default {
 		saveUser: function () {
             var that = this;     
 			var formData = that.toFormData(that.newUser);
-			axios.post("http://localhost/Software/api.php?action=createuser", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createuser", formData)
 				.then(function (response) {
 					console.log(response);
-					that.newUser = { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" };
+					that.newUser = { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "",idrol: "" };
 					console.log(that.newUser)
 					if (response.data.error) {
 						that.errorUserMessage = response.data.message;
@@ -737,7 +747,7 @@ export default {
 		saveRol: function () {
           var that = this;     
 			var formData = that.toFormData(that.newRol);
-			axios.post("http://localhost/Software/api.php?action=createrol", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=createrol", formData)
 				.then(function (response) {
 					console.log(response);
 					that.newRol = { id: "", nombre: "", descripcion: "" };
@@ -756,7 +766,7 @@ export default {
 		savePrograma: function () {
       var that = this;    
 			var formData = that.toFormData(that.newPrograma);
-			axios.post("http://localhost/Software/api.php?action=saveProgramaFacultad", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=saveProgramaFacultad", formData)
 				.then(function (response) {
 					console.log(response);
 					that.newPrograma= { id: "", nombre: "", facultad: "",snies:"",duracion:"",modalidad:"",reacreditacion:"",icfes:"",renovacion:"",tipo:"" }
@@ -773,17 +783,15 @@ export default {
 		//Actualiza un usuario dependiendo del id de este
 		updateUser: function () {
 			var that = this;
-			console.log("editando")
-			console.log(that.clickedUser)
 			var formData = that.toFormData(that.clickedUser);
-			axios.post("http://localhost/Software/api.php?action=updateuser", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateuser", formData)
 				.then(function (response) {
-					console.log(response);
 					that.clickedUser = {};
 					if (response.data.error) {
 						that.errorUserMessage = response.data.message;
 					} else {
 						that.successUserMessage = response.data.message;
+						console.log("Melo Wey")
 						that.getAllUsers();
 					}
 				});
@@ -792,7 +800,7 @@ export default {
 		updatePrograma: function () {
       var that = this;
 			var formData = that.toFormData(that.clickedPrograma);
-			axios.post("http://localhost/Software/api.php?action=updateProgramasFacultad", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updateProgramasFacultad", formData)
 				.then(function (response) {
 					console.log(response);
 					that.clickedPrograma = {};
@@ -807,7 +815,7 @@ export default {
 		updateRol: function () {
       var that = this;
 			var formData = that.toFormData(that.clickedRol);
-			axios.post("http://localhost/Software/api.php?action=updaterol", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=updaterol", formData)
 				.then(function (response) {
 					that.clickedRol = {};
 					if (response.data.error) {
@@ -822,7 +830,7 @@ export default {
 		deleteUser: function () {
       var that = this;
 			var formData = that.toFormData(that.clickedUser);
-			axios.post("http://localhost/Software/api.php?action=deleteuser", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deleteuser", formData)
 				.then(function (response) {
 					that.clickedUser = {};
 					if (response.data.error) {
@@ -837,7 +845,7 @@ export default {
 		deletePrograma: function () {
       var that = this;
 			var formData = that.toFormData(that.clickedPrograma);
-			axios.post("http://localhost/Software/api.php?action=deletePrograma", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deletePrograma", formData)
 				.then(function (response) {
 					console.log(response);
 					that.clickedPrograma = {};
@@ -853,7 +861,7 @@ export default {
 		deleteRol: function () {
       var that = this;
 			var formData = that.toFormData(that.clickedRol);
-			axios.post("http://localhost/Software/api.php?action=deleterol", formData)
+			axios.post("http://localhost/VersionFinalProyectoAula/src/back/api.php?action=deleterol", formData)
 				.then(function (response) {
 					console.log(response);
 					that.clickedRol = {};
@@ -869,6 +877,9 @@ export default {
 		selectUser(user) {
       var that = this;
 			that.clickedUser = user;
+			console.log("Pruebas")
+			console.log(that.clickedUser.idrol)
+			console.log(user)
 		},
 		//Establece el rol seleccionado
 		selectRol(rol) {
