@@ -46,97 +46,6 @@
 		<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
 		<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
 
-		<table class="list">
-			<tr>
-				<th>ID</th>
-				<th>Nombre</th>
-				<th>Facultad</th>
-				<th>Snies</th>
-				<th>Duracion</th>
-				<th>Modalidad</th>
-				<th>Reacreditacion</th>
-				<th>Icfes</th>
-				<th>Renovacion</th>
-				<th>Tipo</th>
-				<th>Editar</th>
-				<th>Eliminar</th>
-				<th>UOCs</th>
-			</tr>
-			<tr v-for="programa in programas">
-				<td>{{programa.id}}</td>
-				<td>{{programa.nombre}}</td>
-				<td>{{programa.facultad}}</td>
-				<td>{{programa.snies}}</td>
-				<td>{{programa.duracion}}</td>
-				<td>{{programa.modalidad}}</td>
-				<td>{{programa.reacreditacion}}</td>
-				<td>{{programa.icfes}}</td>
-				<td>{{programa.renovacion}}</td>
-				<td>{{programa.tipo}}</td>
-
-				<td><button @click="showingProgramaeditModal = true; selectPrograma(programa)">Editar</button></td>
-				<td><button @click="showingProgramadeleteModal = true; selectPrograma(programa)">Eliminar</button></td>
-				<td><button @click="location='../privilegios.html'">Definir UOCs</button></td>
-
-			</tr>
-		</table>
-
-		<hr>
-
-		<!--Lista de roles------------------------------------------------------------------------------>
-
-		<table class="list">
-			<tr>
-				<th>ID</th>
-				<th>Nombre</th>
-				<th>Descripcion</th>
-				<th>Editar</th>
-				<th>Eliminar</th>
-				<th>Privilegios</th>
-			</tr>
-			<tr v-for="rol in roles">
-				<td>{{rol.id}}</td>
-				<td>{{rol.nombre}}</td>
-				<td>{{rol.descripcion}}</td>
-
-				<td><button @click="showingRoleditModal = true; selectRol(rol)">Editar</button></td>
-				<td><button @click="showingRoldeleteModal = true; selectRol(rol)">Eliminar</button></td>
-				<td><button @click="location='../privilegios.html'">Privilegios</button></td>
-			</tr>
-		</table>
-
-		<hr>
-
-		<!--Lista de usuarios------------------------------------------------------------------------------>
-		<table class="list" id="simple">
-			<tr>
-				<th>ID</th>
-				<th>Nombre</th>
-				<th>Apellido</th>
-				<th>E-mail</th>
-				<th>Clave</th>
-				<th>Credencial</th>
-				<th>Lista</th>
-				<th>Programa</th>
-				<th>Rol</th>
-				<th>Editar</th>
-				<th>Eliminar</th>
-			</tr>
-			<tr v-for="user in usuarios">
-				<td>{{user.id}}</td>
-				<td>{{user.nombre}}</td>
-				<td>{{user.apellido}}</td>
-				<td>{{user.correo}}</td>
-				<td>{{user.clave}}</td>
-				<td>{{user.credencial}}</td>
-				<td>{{user.idlista}}</td>
-				<td>{{user.idprograma}}</td>
-				<td>{{user.idrol}}</td>
-
-				<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
-				<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
-			</tr>
-		</table>
 		<div class="fix"></div>
 		<!--Agregar un nuevo usuario-------------------------------------------------------------------------------->
 		<div class="modal col-md-6" id="addmodal" v-if="showingModal">
@@ -523,6 +432,135 @@
 				</div>
 			</div>
 		</div>
+		<div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Programas
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+				<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Facultad</th>
+				<th>Snies</th>
+				<th>Duracion</th>
+				<th>Modalidad</th>
+				<th>Reacreditacion</th>
+				<th>Icfes</th>
+				<th>Renovacion</th>
+				<th>Tipo</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+				<th>UOCs</th>
+			</tr>
+			<tr v-for="programa in programas">
+				<td>{{programa.id}}</td>
+				<td>{{programa.nombre}}</td>
+				<td>{{programa.facultad}}</td>
+				<td>{{programa.snies}}</td>
+				<td>{{programa.duracion}}</td>
+				<td>{{programa.modalidad}}</td>
+				<td>{{programa.reacreditacion}}</td>
+				<td>{{programa.icfes}}</td>
+				<td>{{programa.renovacion}}</td>
+				<td>{{programa.tipo}}</td>
+
+				<td><button @click="showingProgramaeditModal = true; selectPrograma(programa)">Editar</button></td>
+				<td><button @click="showingProgramadeleteModal = true; selectPrograma(programa)">Eliminar</button></td>
+				<td><button @click="location='../privilegios.html'">Definir UOCs</button></td>
+
+			</tr>
+		</table>
+
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Roles
+        </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+				
+		<!--Lista de roles------------------------------------------------------------------------------>
+		<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Descripcion</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+				<th>Privilegios</th>
+			</tr>
+			<tr v-for="rol in roles">
+				<td>{{rol.id}}</td>
+				<td>{{rol.nombre}}</td>
+				<td>{{rol.descripcion}}</td>
+
+				<td><button @click="showingRoleditModal = true; selectRol(rol)">Editar</button></td>
+				<td><button @click="showingRoldeleteModal = true; selectRol(rol)">Eliminar</button></td>
+				<td><button @click="location='../privilegios.html'">Privilegios</button></td>
+			</tr>
+		</table>
+
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Usuarios
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+					<!--Lista de usuarios------------------------------------------------------------------------------>
+		<table class="list" id="simple">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Apellido</th>
+				<th>E-mail</th>
+				<th>Clave</th>
+				<th>Credencial</th>
+				<th>Lista</th>
+				<th>Programa</th>
+				<th>Rol</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+			</tr>
+			<tr v-for="user in usuarios">
+				<td>{{user.id}}</td>
+				<td>{{user.nombre}}</td>
+				<td>{{user.apellido}}</td>
+				<td>{{user.correo}}</td>
+				<td>{{user.clave}}</td>
+				<td>{{user.credencial}}</td>
+				<td>{{user.idlista}}</td>
+				<td>{{user.idprograma}}</td>
+				<td>{{user.idrol}}</td>
+
+				<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
+				<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
+			</tr>
+		</table>
+      </div>
+    </div>
+  </div>
+</div>
 	</div>
 	</div>
   
